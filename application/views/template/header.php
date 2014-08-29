@@ -26,9 +26,9 @@ License: Creative Commons Attribution
     <nav>
 	<div class="width">
     		<ul>
-        		<li class="start selected"><a href="#">首頁</a></li>
-        	    	<li class=""><a href="#">個人資訊</a></li>
-         	   	<li class="end"><a href="#">通訊錄</a></li>
+        		<li class="start <?= isset($tab['home'])? "selected" : "" ?>"><a href="/">首頁</a></li>
+        	    	<li class="<?= isset($tab['user'])? "selected" : "" ?>"><a href="/index.php/user/">個人資訊</a></li>
+         	   	<li class="end <?= isset($tab['directory'])? "selected" : "" ?>"><a href="/index.php/directory/">通訊錄</a></li>
         	</ul>
 	</div>
     </nav>

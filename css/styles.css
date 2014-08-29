@@ -116,7 +116,7 @@ fieldset p label {
 fieldset li label {
 	display:-moz-inline-box;
 	display:inline-block;
-	width: 30px;
+	width: 60px;
 }
 
 form input, form select, form textarea {
