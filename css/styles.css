@@ -20,6 +20,10 @@ table {
 	text-align: left;
 }
 
+textarea {
+	resize: none;
+}
+
 th, td {
 	padding: 10px 10px;
 }
@@ -84,6 +88,7 @@ a.button {
     padding: 8px 15px;
     text-decoration: none;
     text-transform: uppercase;
+    cursor: pointer;
 }
 
 a.button:hover {
@@ -95,6 +100,10 @@ fieldset {
 	display: block;
 	border: none;
 	border-top: 1px solid #ccc;
+}
+fieldset.clear {
+	display: block;
+	border: none;
 }
 
 fieldset legend {
@@ -113,10 +122,18 @@ fieldset p label {
 	width: 150px;
 }
 
-fieldset li label {
+fieldset label.label60 {
 	display:-moz-inline-box;
 	display:inline-block;
 	width: 60px;
+}
+fieldset label.label120 {
+	display:-moz-inline-box;
+	display:inline-block;
+	width: 120px;
+}
+.vert-align-mid *{
+	vertical-align:middle;
 }
 
 form input, form select, form textarea {
@@ -157,9 +174,22 @@ span.required {
 }
 
 span.span10 {
-	display:-moz-inline-box;
-	display:inline-block;
+	display: -moz-inline-box;
+	display: inline-block;
 	width: 10px;
+}
+
+span.span120 {
+	display: -moz-inline-box;
+	display: inline-block;
+	width: 120px;
+}
+span.u-text {
+	display: -moz-inline-box;
+	display: inline-block;
+	width: 240px;
+	border-bottom: 1px solid #ccc;
+	word-wrap: break-word;
 }
 
 h1 {
@@ -214,6 +244,14 @@ li ol, li ul {
 	font-size: 1.0em;
 	margin-bottom: 0;
 	padding-top: 5px;
+}
+
+ul.no_style {
+	margin: 0;
+}
+
+ul.no_style li{
+	list-style: none outside none;
 }
 
 .width {
