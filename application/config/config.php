@@ -357,6 +357,10 @@ $config['rewrite_short_tags'] = FALSE;
 */
 $config['proxy_ips'] = '';
 
+$config['privilege'] = array(
+	'admin' => 1,
+	'user' => 0,
+	);
 
 /* End of file config.php */
 /* Location: ./application/config/config.php */

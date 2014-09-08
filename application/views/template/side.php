@@ -6,8 +6,10 @@
 				<div id="sign_out">
 					<ul>
 						<li><span>Hi, <?= $user['name'] ?>.</span></li>
-						<li><a id="sign_out_submit" href="javascript:void(0)" class="button">Sign Out</a></li>
 					</ul>
+					<div class="init_line_height">
+					<a id="sign_out_submit" href="javascript:void(0)" class="button">Sign Out</a>
+					</div>
 				</div>
 				<?php else: ?>
 				<div id="sign_in">
@@ -17,8 +19,10 @@
 						<li><label class="label60" for="name">NAME</label><input type="text" size="16" value="" name="name"></li>
 						<li><label class="label60" for="pw">PW</label><input type="password" size="16" value="" name="pw"></li>
 						<li><span id="sign_in_msg" class="warning"></span></li>	
-						<li><a id="sign_in_submit" href="javascript:void(0)" class="button">Sign In</a></li>
 					</ul>
+					<div class="init_line_height">
+					<a id="sign_in_submit" href="javascript:void(0)" class="button">Sign In</a></div>
+					</div>
 					</fieldset>
 					</form>
 				</div>
@@ -29,7 +33,7 @@
 				<h4>關於我們</h4>
 				<ul>
 				<li class="text">
-				<p style="margin: 0;"></p>
+				<p></p>
 				</li>
 				</ul>
 			</li>

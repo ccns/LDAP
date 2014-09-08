@@ -4,7 +4,7 @@ class User_model extends CI_Model {
 	var $table_name = "user";
 	var $exclude_fields = array('pw' => 1);
 
-	public function add_user($q, $con)
+	public function add_user($q)
 	{
 		$this->load->database();
 		
@@ -17,14 +17,14 @@ class User_model extends CI_Model {
 		
 		return $this->db->insert($this->table_name,$data);
 	}
-	public function del_user($id = null)
+	public function del_user($uid = null)
 	{
 		$this->load->database();
-		if(!isset($id) || id == 1){ return FALSE; }
-		$this->db->where('uid',$id);
+		if(!isset($uid) || $uid == 1){ return FALSE; }
+		$this->db->where('uid',$uid);
 		return $this->db->delete($this->table_name);
 	}
-	public function get_user($q = array(),$con = array('offset'=>1))
+	public function get_user($q = array(),$con = array())
 	{
 		$this->load->database();
 		if(count($q)){
@@ -39,8 +39,16 @@ class User_model extends CI_Model {
 		}
 		$this->db->select(join(',',$valid));
 
-		if(isset($con['limit']) && is_numeric($con['limit']) && is_numeric($con['offset']) && $con['offset'] > 0){
-			$this->db->limit($con['limit'],($con['offset']-1)*$con['limit']);
+		if(isset($con['limit']) && is_numeric($con['limit'])){
+			if(!isset($con['offset']) || !is_numeric($con['offset'])){
+				$con['offset'] = 0;
+			}
+			$this->db->limit($con['limit'],$con['offset']);
+		}
+		if(isset($con['where'])){
+			foreach ($con['where'] as $w=>$v){
+				$this->db->where($w,$v);
+			}
 		}
 		$query = $this->db->get($this->table_name);
 		return $query->result_array();

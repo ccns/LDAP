@@ -31,6 +31,7 @@ $(document).ready(function(){
 	$('#add_user_submit').click(function(){
 		var userdata = {};
 		var form = $('#add_user');
+		$('#add_user_msg').html("");
 
 		userdata.name = form.find('[name=name]').val();
 		userdata.realname = form.find('[name=realname]').val();
@@ -48,11 +49,14 @@ $(document).ready(function(){
 		})
 		.done(function(j){
 			if(j.status){
+				alert("新增成功!");
 				location.reload();
 			}else{
 				$('#add_user_msg').html(j.msg);
 			}
 		});
 	});
+	$('#member_directory').dataTable();
+	
 	
 });

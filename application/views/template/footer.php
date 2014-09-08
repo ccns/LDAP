@@ -20,5 +20,6 @@
 <!-- end of container -->
 </body>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+<script src="//cdn.datatables.net/1.10.2/js/jquery.dataTables.min.js"></script>
 <script src="/js/main.js"></script>
 </html>
