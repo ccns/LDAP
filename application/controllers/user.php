@@ -91,20 +91,20 @@ class User extends CI_Controller {
 		}
 		if(strlen($arg['name']) < 4 || strlen($arg['name']) > 16){
 			$data['status'] = 0;
-			$data['msg'] = 'Your name need to be more than 4 letters and less than 16 letters.';
+			$data['msg'] = 'Your name need to be more than 4 characterss and less than 16 characters.';
 			echo json_encode($data);
 			return ;
 		}
 		if(strlen($arg['pw']) < 6 || strlen($arg['pw']) > 16){
 			$data['status'] = 0;
-			$data['msg'] = 'Your password need to be more than 6 letters and less than 16 letters';
+			$data['msg'] = 'Your password need to be more than 6 characters and less than 16 characters';
 			echo json_encode($data);
 			return ;
 		}
 		
 		if(strlen($arg['email']) > 64){
 			$data['status'] = 0;
-			$data['msg'] = 'Your email need to be less than 64 letters.';
+			$data['msg'] = 'Your email need to be less than 64 characters.';
 			echo json_encode($data);
 			return ;
 
@@ -133,7 +133,94 @@ class User extends CI_Controller {
 		echo json_encode($data);
 	}
 	public function edit_user(){
+		$this->load->model('user_model');
+		$this->load->helper('security');
 
+		$uid = $this->session->userdata('uid');
+		
+		$user = NULL;
+		$data = NULL;
+
+		if($uid == FALSE){
+			$data['status'] = 0;
+			$data['msg'] = 'Error. Please try again.';
+			echo json_encode($data);
+			return ;
+		}	
+
+		$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+
+		$arg = $this->input->post(NULL,TRUE);
+		if(!isset($arg['field']) || !isset($arg['val'])){
+			$data['status'] = 0;
+			$data['msg'] = 'Error. Please try again.';
+			$data['other'] = $arg;
+			echo json_encode($data);
+			return ;
+		}
+		switch($arg['field']){
+			case 'realname':
+				if(strlen($arg['val']) > 16){
+					$arg['val'] = substr($arg['val'], 0, 16);
+				}
+				break;
+			case 'email':
+				if(!preg_match("/[a-zA-Z0-9_-]*@\w+(\.\w+)+/",$arg['val'])){
+					$data['status'] = 0;
+					$data['msg'] = 'Invalid email.';
+					$data['field'] = $arg['field'];
+					echo json_encode($data);
+					return ;
+				}
+				if(strlen($arg['val']) > 64){
+					$arg['val'] = substr($arg['val'], 0, 64);
+				}
+				
+				break;
+			case 'phone':
+				if(!preg_match("/[0-9-+]+/",$arg['val'])){
+					$data['status'] = 0;
+					$data['msg'] = 'Invalid phone number.';
+					$data['field'] = $arg['field'];
+					echo json_encode($data);
+					return ;
+				}
+				if(strlen($arg['val']) > 20){
+					$arg['val'] = substr($arg['val'], 0, 20);
+				}
+				break;
+			case 'pages':
+				if(strlen($arg['val']) > 512){
+					$arg['val'] = substr($arg['val'], 0, 512);
+				}
+				break;
+			case 'pw':
+				if(strlen($arg['val']) < 6 || strlen($arg['val']) > 16){
+					$data['status'] = 0;
+					$data['msg'] = 'Your password need to be more than 6 characters and less than 16 characters';
+					echo json_encode($data);
+					return ;
+				}
+				$arg['val'] = do_hash($arg['val']);
+				break;
+			default: 
+				$data['status'] = 0;
+				$data['msg'] = 'Error. Please try again.';
+				$data['field'] = $arg['field'];
+				echo json_encode($data);
+				return ;
+		}
+		$ret = $this->user_model->edit_user(array('uid'=>$uid),array($arg['field']=>$arg['val']));
+		if($ret == FALSE){
+			$data['status'] = 0;
+			$data['msg'] = 'Error. Please try again.';
+			$data['field'] = $arg['field'];
+			echo json_encode($data);
+			return ;
+		}
+
+		$data['status'] = 1;
+		echo json_encode($data);
 	}
 	
 /* private */

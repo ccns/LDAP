@@ -54,16 +54,19 @@ class User_model extends CI_Model {
 		return $query->result_array();
 		
 	}
-	public function edit_user($q = array())
+	public function edit_user($q = array(),$edit = array())
 	{
 		$this->load->database();
 		$f = $this->db->list_fields($this->table_name);
 		$data = array();
 		foreach ($f as $v){
-			$data[$v] = isset($q[$v]) ? $q[$v] : '';
-		}	
-		$this->db->where('uid', $data['uid']);
-		unset($data['uid']);
+			if(isset($edit[$v])){
+				$data[$v] = $edit[$v];
+			}
+			if(isset($q[$v])){
+				$this->db->where($v, $q[$v]);
+			}
+		}
 		return $this->db->update('user', $data);
 	}
 }

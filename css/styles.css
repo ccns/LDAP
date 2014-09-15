@@ -189,6 +189,11 @@ span.span150 {
 	display: inline-block;
 	width: 150px;
 }
+
+span.warning {
+	color: red;
+}
+
 .view-text {
 	display: -moz-inline-box;
 	display: inline-block;
