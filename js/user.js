@@ -33,7 +33,6 @@ $(document).ready(function(){
 	function ui_focusout(e){
 		$('div.edit-block').each(_recover_edit);
 		_hide_pw_field();
-		
 	}
 
 	$('a.edit-user').on('click',_edit);
@@ -45,15 +44,24 @@ $(document).ready(function(){
 		var view_text = $(this).parent().find('.view-text');
 		var edit_text = $(this).parent().find('.edit-text');	
 		var p = $(this).parent();	
+		
+		var text = view_text.html();
+		$(this).parent().find('.urls').each(function(){
+			text = '';
+			$(this).find('.split').each(function(){
+				text += $(this).html()+'\n';
+			});
+		});
+		text = text.replace(/\n*$/g,'');
 
 		if(!view_text.hasClass('hide')){
 			view_text.addClass('hide');
 		}
 		if(edit_text.hasClass('hide')){
+			edit_text.val(text);
 			edit_text.removeClass('hide');
 			edit_text.focus();
 		}
-
 
 		p.on('click',function(e){ e.stopPropagation(); });
 		$(this).html('submit').off().on('click',_submit_edit);
@@ -62,24 +70,31 @@ $(document).ready(function(){
 		var obj = $(this);
 
 		var data = {};
-		data.field = $(this).parent().find('input').attr('name'); 
-		data.val = $(this).parent().find('input').val();
+		data.field = obj.parent().find('.edit-text').attr('name'); 
+		data.val = obj.parent().find('.edit-text').val();
+		data.name = $('#username').html();
 
-		var view_text = $(this).parent().find('.view-text');
-		var p = $(this).parent();
+		var view_text = obj.parent().find('.view-text');
+		var p = obj.parent();
+
+		data.val = data.val.replace(/\n*$/g,'');
 
 		$.ajax({
 			type: 'POST',
 			url: '/index.php/user/edit_user',
 			data: data, 
 			dataType: 'json',
-			error: function(){
+			error: function(x,st,err){
 				p.each(_recover_edit);
 			},
 		})
 		.done(function(j){
 			if(j.status){
-				view_text.html(val);
+				var text = data.val;
+				obj.parent().find('.urls').each(function(){
+					text = _split_urls(data.val);
+				});
+				view_text.html(text);
 			}else{
 				obj.parent().find('.warning').html(j.msg);
 			}
@@ -124,6 +139,7 @@ $(document).ready(function(){
 
 		data.field = 'pw';
 		data.val = pw_field.find('input[name=pw]').val();
+		data.name = $('#username').html();
 
 		var confirm_pw = pw_field.find('input[name=confirm]').val();
 
@@ -162,6 +178,26 @@ $(document).ready(function(){
 			pw_block.off();
 			$('#change-password').html('change password').off().on('click',_show_pw_field);
 		}
+	}
+	
+	$('.urls').each(function(){
+		$(this).html(_split_urls($(this).html()));
+	});
+	
+	function _split_urls(urls){
+		if(!urls){
+			return;
+		}
+		var split = urls.split(/\n|;|,| /);	
+		var list = $('<ul class="no-style"></ul>');
+		split.forEach(function(e){ 
+			list.append(
+				$('<li></li>').append(
+					$('<span class="split"></span>').html(e)
+				)
+			);
+		});
+		return list;
 	}
 });
 

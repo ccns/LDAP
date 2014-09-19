@@ -27,7 +27,7 @@
 						}
 					?>
 					<tr>
-						<td><a href="<?= site_url('user/page/'.$e['name']) ?>"><?= isset($e['name']) ? $e['name'] : '' ?></a></td>
+						<td><a href="/index.php/user/page/<?= $e['name'] ?>"><?= $e['name'] ?></a></td>
 						<td><?= isset($e['realname']) ? $e['realname'] : '' ?></td>
 						<td><?= isset($e['email']) ? $e['email'] : '' ?></td>
 						<td><?= isset($e['phone']) ? $e['phone'] : '' ?></td>

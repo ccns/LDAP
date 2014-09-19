@@ -2,7 +2,16 @@
 
 class User extends CI_Controller {
 
+	public function test(){
+		$data['status'] = 1;
+		echo json_encode($data);
+	}
 	public function index()
+	{
+		$this->page();
+	}
+
+	public function page($name = NULL)
 	{
 		$this->load->model('user_model');
 		$priv = $this->config->item('privilege');
@@ -11,16 +20,34 @@ class User extends CI_Controller {
 		$data['user'] = NULL;
 		if($uid != FALSE){
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
-			$data['user'] = $user[0];
+			if($user){
+				$data['user'] = $user[0];
+			}
+
 		}
+
 		if($data['user']){
-			$data['local_view'] = 1;
-			if($data['user']['priv'] == $priv['admin']){
-				$data['allow_add_user'] = 1;
+
+			if(!$name || $name == $this->session->userdata('name')){
+				$data['view'] = $user[0];
+				$data['local_view'] = 1;
+				if($data['user']['priv'] == $priv['admin']){
+					$data['allow_add_user'] = 1;
+				}
+			}else{
+				$view = $this->user_model->get_user(array('name'=>$name),NULL);
+				if($view){
+					$data['view'] = $view[0];
+				}
+				if($data['user']['priv'] == $priv['admin']){
+					$data['allow_edit_user'] = 1;
+				}
 			}
 		}
+		
 		$data['tab']['user'] = 1;
 		$this->set_page('user',$data);
+
 	}
 	
 	public function sign_in()
@@ -135,11 +162,13 @@ class User extends CI_Controller {
 	public function edit_user(){
 		$this->load->model('user_model');
 		$this->load->helper('security');
+		$priv = $this->config->item('privilege');
 
 		$uid = $this->session->userdata('uid');
 		
 		$user = NULL;
 		$data = NULL;
+		$name = NULL;
 
 		if($uid == FALSE){
 			$data['status'] = 0;
@@ -149,15 +178,33 @@ class User extends CI_Controller {
 		}	
 
 		$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
-
-		$arg = $this->input->post(NULL,TRUE);
-		if(!isset($arg['field']) || !isset($arg['val'])){
+		if(!$user){
 			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
-			$data['other'] = $arg;
 			echo json_encode($data);
 			return ;
 		}
+
+		$arg = $this->input->post(NULL,TRUE);
+		if(!$arg){
+			$data['status'] = 0;
+			$data['msg'] = 'Error. Please try again.';
+			echo json_encode($data);
+			return ;
+		}
+		
+		if(!isset($arg['field']) || !isset($arg['val'])){
+			$data['status'] = 0;
+			$data['msg'] = 'Error. Please try again.';
+			echo json_encode($data);
+			return ;
+		}
+		if($user[0]['priv'] == $priv['admin']){
+			$name = $arg['name'];
+		}else{
+			$name = $user[0]['name'];
+		}
+		
 		switch($arg['field']){
 			case 'realname':
 				if(strlen($arg['val']) > 16){
@@ -178,7 +225,7 @@ class User extends CI_Controller {
 				
 				break;
 			case 'phone':
-				if(!preg_match("/[0-9-+]+/",$arg['val'])){
+				if(!preg_match("/[0-9-+]*/",$arg['val'])){
 					$data['status'] = 0;
 					$data['msg'] = 'Invalid phone number.';
 					$data['field'] = $arg['field'];
@@ -210,7 +257,7 @@ class User extends CI_Controller {
 				echo json_encode($data);
 				return ;
 		}
-		$ret = $this->user_model->edit_user(array('uid'=>$uid),array($arg['field']=>$arg['val']));
+		$ret = $this->user_model->edit_user(array('name'=>$name),array($arg['field']=>$arg['val']));
 		if($ret == FALSE){
 			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';

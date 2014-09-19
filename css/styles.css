@@ -261,16 +261,21 @@ li ol, li ul {
 	padding-top: 5px;
 }
 
-ul.no-style, ul.list-in-form {
+ul.list-in-form {
 	margin: 0;
 }
 
-ul.no-style li {
-	list-style: none outside none;
-}
 ul.list-in-form li {
 	list-style: none outside none;
 	margin-bottom: 20px;
+}
+ul.no-style {
+	margin: 0;
+}
+ul.no-style li {
+	list-style: none outside none;
+	margin: 0;
+
 }
 
 .width {

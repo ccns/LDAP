@@ -10,43 +10,46 @@
 					if(!isset($user[$n])){
 						$user[$n] = '';
 					}
+					if(!isset($view[$n])){
+						$view[$n] = '';
+					}
 				}
 			?>
 			<form action="#" id="edit-user" method="POST">
 			<fieldset class="clear">
 				<ul class="list-in-form">
-				<li><div class="edit-block"><span class="span150">NAME</span><span class="view-text"><?= $user['name'] ?> </span>
+				<li><div class="edit-block"><span class="span150">NAME</span><span id="username" class="view-text"><?= $view['name'] ?></span>
 				</div></li>
-				<li><div class="edit-block"><span class="span150">REAL NAME</span><span class="view-text"><?= $user['realname'] ?> </span>
-				<?php if(isset($local_view)): ?>
-					<input class="edit-text hide" name="realname" value="<?= $user['realname'] ?>" />
+				<li><div class="edit-block"><span class="span150">REAL NAME</span><span class="view-text"><?= $view['realname'] ?></span>
+				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
+					<input class="edit-text hide" name="realname" value="" />
 					<a class="button edit-user" href="javascript:void(0)">edit</a>
 					<span class="warning"></span>
 				<?php endif; ?>
 				</div></li>
-				<li><div class="vert-align-mid edit-block"><span class="span150">EMAIL</span><span class="view-text"><?= $user['email'] ?> </span>
-				<?php if(isset($local_view)): ?>
-					<input class="edit-text hide" name="email" value="<?= $user['email'] ?>" />
+				<li><div class="vert-align-mid edit-block"><span class="span150">EMAIL</span><span class="view-text"><?= $view['email'] ?></span>
+				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
+					<input class="edit-text hide" name="email" value="" />
 					<a class="button edit-user" href="javascript:void(0)">edit</a>
 					<span class="warning"></span>
 				<?php endif; ?>
 				</div></li>
-				<li><div class="edit-block"><span class="span150">PHONE</span><span class="view-text"><?= $user['phone'] ?> </span>
-				<?php if(isset($local_view)): ?>
-					<input class="edit-text hide" name="phone" value="<?= $user['phone'] ?>" />
+				<li><div class="edit-block"><span class="span150">PHONE</span><span class="view-text"><?= $view['phone'] ?></span>
+				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
+					<input class="edit-text hide" name="phone" value="" />
 					<a class="button edit-user" href="javascript:void(0)">edit</a>
 					<span class="warning"></span>
 				<?php endif; ?>
 				</div></li>
-				<li><div class="vert-align-mid edit-block"><span class="span150">PAGES</span><span class="view-text"><?= $user['pages'] ?> </span>
-				<?php if(isset($local_view)): ?>
-					<input class="edit-text hide" name="pages" value="<?= $user['pages'] ?>" />
+				<li><div class="vert-align-mid edit-block"><span class="span150">PAGES</span><span class="view-text urls"><?= $view['pages'] ?></span>
+				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
+					<textarea rows = "4" cols="22" class="edit-text hide" name="pages" value="" ></textarea>
 					<a class="button edit-user" href="javascript:void(0)">edit</a>
 					<span class="warning"></span>
 				<?php endif; ?>
 				</div></li>
 				</ul>
-				<?php if(isset($local_view)): ?>
+				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
 				<div id="pw-block">
 				<ul id="pw-field" class="list-in-form hide">
 				<li><span class="span150">NEW PASSWORD</span><input type="password" name="pw" class="pw-text" /></li>
