@@ -2,15 +2,21 @@ $(document).ready(function(){
 	$('#add-user-submit').click(function(){
 		var userdata = {};
 		var form = $('#add-user');
+		var confirm_pw = form.find('[name=confirm]').val();
 		$('#add-user-msg').html('');
+
 
 		userdata.name = form.find('[name=name]').val();
 		userdata.realname = form.find('[name=realname]').val();
 		userdata.pw = form.find('[name=pw]').val();
-		userdata.confirm = form.find('[name=confirm]').val();
 		userdata.email = form.find('[name=email]').val();
 		userdata.phone = form.find('[name=phone]').val();
 		userdata.pages = form.find('[name=pages]').val();
+
+		if(userdata.pw != confirm_pw){
+			$('#add-user-msg').html('Your password and confirmation password do no match.');	
+			return;
+		}
 
 		$.ajax({
 			type: 'POST',
@@ -191,10 +197,17 @@ $(document).ready(function(){
 		var split = urls.split(/\n|;|,| /);	
 		var list = $('<ul class="no-style"></ul>');
 		split.forEach(function(e){ 
+			var link = e;
+			var a = $('<a class="split" target="_blank"></a>');
+
+			if(!e.match(/^https?:\/\//)){
+				link = '//' + e;
+			}
+			a.html(e);
+			a.attr('href',link);
+			
 			list.append(
-				$('<li></li>').append(
-					$('<span class="split"></span>').html(e)
-				)
+				$('<li></li>').html(a)
 			);
 		});
 		return list;

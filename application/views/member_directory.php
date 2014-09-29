@@ -12,7 +12,6 @@
 						<th>Real Name</th>
 						<th>Email</th>
 						<th>Phone</th>
-						<th>Pages</th>
 						<?php if(isset($user) && isset($allow_delete_user)): ?>
 						<th>&nbsp;</th>
 						<?php endif; ?>
@@ -31,9 +30,8 @@
 						<td><?= isset($e['realname']) ? $e['realname'] : '' ?></td>
 						<td><?= isset($e['email']) ? $e['email'] : '' ?></td>
 						<td><?= isset($e['phone']) ? $e['phone'] : '' ?></td>
-						<td><?= isset($e['pages']) ? $e['pages'] : '' ?></td>
 						<?php if(isset($user) && isset($allow_delete_user)): ?>
-						<td><a class="button" name="<?= $e['name'] ?>" href="javascript:void(0)">del</a></td>
+						<td><a class="button del" name="<?= isset($e['uid']) ? $e['uid'] : '' ?>" href="javascript:void(0)">del</a></td>
 						<?php endif; ?>
 					</tr>	
 					<?php endforeach; ?> 

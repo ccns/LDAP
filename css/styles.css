@@ -67,6 +67,7 @@ p {
 
 a {
 	color: #00A0EB;
+	cursor: pointer;
 }
 
 a:hover {
