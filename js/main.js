@@ -1,5 +1,7 @@
 $(document).ready(function(){
-	$('#sign-in-submit').click(function(){
+	$('#sign-in-submit').click(sign_in_submit);
+
+	function sign_in_submit(){
 
 		var name = $('#sign-in').find('[name=name]').val();
 		var pw = $('#sign-in').find('[name=pw]').val();
@@ -17,7 +19,8 @@ $(document).ready(function(){
 			}
 		});
 		
-	});
+	}
+
 	$('#sign-out-submit').click(function(){
 		$.ajax({
 			type: 'GET',
@@ -27,6 +30,12 @@ $(document).ready(function(){
 		.done(function(j){
 			location.reload();
 		});
+	});
+
+	$('#sign-in').find('input').keydown(function(e){
+		if(e.which == 13){
+			sign_in_submit();	
+		}
 	});
 });
 

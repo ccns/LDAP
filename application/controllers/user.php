@@ -127,7 +127,7 @@ class User extends CI_Controller {
 		$arg = $this->input->post(NULL,TRUE);
 
 		if(!isset($arg['name']) || !isset($arg['pw']) || !isset($arg['email'])){
-			$data['msg'] = 'Your name, password and email are required.';
+			$data['msg'] = 'Username, password and email are required.';
 			echo json_encode($data);
 			return ;
 		}
@@ -135,6 +135,11 @@ class User extends CI_Controller {
 		$ret = $this->check_name($arg['name']);
 		if($ret['status'] == 0){
 			$data['msg'] = $ret['msg'];
+			echo json_encode($data);
+			return ;
+		}
+		if($this->user_model->get_user(array('name' => $ret['val']), NULL)){
+			$data['msg'] = 'Username already exists.';
 			echo json_encode($data);
 			return ;
 		}
@@ -151,6 +156,12 @@ class User extends CI_Controller {
 		$ret = $this->check_email($arg['email']);
 		if($ret['status'] == 0){
 			$data['msg'] = $ret['msg'];
+			echo json_encode($data);
+			return ;
+		}
+		$arg['email'] = $ret['val'];
+		if($this->user_model->get_user(array('email' => $arg['email']), NULL)){
+			$data['msg'] = 'Email already exists.';
 			echo json_encode($data);
 			return ;
 		}
@@ -279,6 +290,12 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return ;
 				}
+				$arg['val'] = $ret['val'];
+				if($this->user_model->get_user(array('email' => $arg['val']), NULL)){
+					$data['msg'] = 'Email already exists.';
+					echo json_encode($data);
+					return ;
+				}
 				break;
 			case 'phone':
 				$ret = $this->check_phone($arg['val']);
@@ -324,6 +341,7 @@ class User extends CI_Controller {
 		}
 
 		$data['status'] = 1;
+		$data['val'] = $arg['val'];
 		echo json_encode($data);
 	}
 	
@@ -333,13 +351,13 @@ class User extends CI_Controller {
 		$ret = array('status' => 1);
 		if(strlen($name) < 4 || strlen($name) > 16){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Your name must be more than 4 characterss and less than 16 characters.';
+			$ret['msg'] = 'Username must be more than 4 characterss and less than 16 characters.';
 			return $ret;
 		}
 		$ret['val'] = strtolower($name);
 		if(!preg_match("/^[a-z_][a-z0-9_-]*$/",$ret['val'])){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Your name must match pattern /^[a-z_][a-z0-9_-]*$/.';
+			$ret['msg'] = 'Username must match pattern /^[a-z_][a-z0-9_-]*$/.';
 			return $ret;
 		}
 		return $ret;
@@ -349,10 +367,11 @@ class User extends CI_Controller {
 		$ret = array('status' => 1);
 		if(strlen($pw) < 6 || strlen($pw) > 16){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Your password must be more than 6 characters and less than 16 characters.';
+			$ret['msg'] = 'Password must be more than 6 characters and less than 16 characters.';
 			return $ret;
 		
 		}
+
 		if(!preg_match("/^[a-zA-Z0-9+=-_()*&^%$#@!~?><.,\/\|\[\]}{;: ]+$/",$pw)){
 			$ret['status'] = 0;
 			$ret['msg'] = 'Invalid password.';
@@ -363,17 +382,23 @@ class User extends CI_Controller {
 	private function check_email($email = NULL)
 	{
 		$ret = array('status' => 1);
-		if(strlen($email) > 64){
+		if(strlen($email) < 5){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Your email must be less than 64 characters.';
+			$ret['msg'] = 'Email is required.';
+			return $ret;
+		}else if(strlen($email) > 64){
+			$ret['status'] = 0;
+			$ret['msg'] = 'Email must be less than 64 characters.';
 			return $ret;
 
 		} 
-		if(!preg_match("/^[a-zA-Z0-9_-]*@[a-zA-Z0-9_-]+(\.[a-zA-Z0-9_-]+)+$/",$email)){
+		if(!preg_match("/^([a-zA-Z0-9_-]+)(@[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+))+$/",$email,$match)){
 			$ret['status'] = 0;
 			$ret['msg'] = 'Invalid email.';
 			return $ret;
 		}
+		$ret['val'] = $match[1] . (strtolower($match[2]));
+		
 		return $ret;
 	}
 	private function check_realname($realname = NULL)

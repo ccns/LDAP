@@ -27,14 +27,15 @@ class User_model extends CI_Model {
 	public function get_user($q = array(),$con = array())
 	{
 		$this->load->database();
-		if(count($q)){
-			$this->db->where($q);
-		}
 		$f = $this->db->list_fields($this->table_name);
 		$valid = array();
+		$where = array();
 		foreach ($f as $n){
 			if(!isset($exclude_fields[$n])){
 				array_push($valid,$n);
+			}
+			if(isset($q[$n])){
+				$where[$n] = $q[$n];
 			}
 		}
 		$this->db->select(join(',',$valid));
@@ -45,11 +46,12 @@ class User_model extends CI_Model {
 			}
 			$this->db->limit($con['limit'],$con['offset']);
 		}
-		if(isset($con['where'])){
-			foreach ($con['where'] as $w=>$v){
-				$this->db->where($w,$v);
-			}
+		if(isset($con['like'])){
+			$this->db->like($where);
+		}else{
+			$this->db->where($where);
 		}
+
 		$query = $this->db->get($this->table_name);
 		return $query->result_array();
 		

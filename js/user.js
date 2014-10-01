@@ -42,6 +42,17 @@ $(document).ready(function(){
 	}
 
 	$('a.edit-user').on('click',_edit);
+
+	$('input.edit-text').keydown(function(e){
+		if(e.which == 13){
+			_submit_edit.call($(this));
+		}
+	});
+	$('#pw-field').find('input').keydown(function(e){
+		if(e.which == 13){
+			_submit_pw.call($(this));
+		}
+	});
 		
 	function _edit(e){
 		ui_focusout();
@@ -72,16 +83,15 @@ $(document).ready(function(){
 		p.on('click',function(e){ e.stopPropagation(); });
 		$(this).html('submit').off().on('click',_submit_edit);
 	}	
-	function _submit_edit(e){
-		var obj = $(this);
+	function _submit_edit(){
+		var obj = $(this).parent();
 
 		var data = {};
-		data.field = obj.parent().find('.edit-text').attr('name'); 
-		data.val = obj.parent().find('.edit-text').val();
+		data.field = obj.find('.edit-text').attr('name'); 
+		data.val = obj.find('.edit-text').val();
 		data.name = $('#username').html();
 
-		var view_text = obj.parent().find('.view-text');
-		var p = obj.parent();
+		var view_text = obj.find('.view-text');
 
 		data.val = data.val.replace(/\n*$/g,'');
 
@@ -91,20 +101,21 @@ $(document).ready(function(){
 			data: data, 
 			dataType: 'json',
 			error: function(x,st,err){
-				p.each(_recover_edit);
+				obj.each(_recover_edit);
 			},
 		})
 		.done(function(j){
 			if(j.status){
-				var text = data.val;
-				obj.parent().find('.urls').each(function(){
-					text = _split_urls(data.val);
+				//var text = data.val;
+				var text = j.val;
+				obj.find('.urls').each(function(){
+					text = _split_urls(j.val);
 				});
 				view_text.html(text);
 			}else{
-				obj.parent().find('.warning').html(j.msg);
+				obj.find('.warning').html(j.msg);
 			}
-			p.each(_recover_edit);
+			obj.each(_recover_edit);
 		});
 	}
 	function _recover_edit(e){
