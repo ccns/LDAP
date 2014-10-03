@@ -12,6 +12,7 @@ $(document).ready(function(){
 		userdata.email = form.find('[name=email]').val();
 		userdata.phone = form.find('[name=phone]').val();
 		userdata.pages = form.find('[name=pages]').val();
+		userdata.priv = form.find('[name=priv]').val();
 
 		if(userdata.pw != confirm_pw){
 			$('#add-user-msg').html('Your password and confirmation password do no match.');	
@@ -42,12 +43,35 @@ $(document).ready(function(){
 	}
 
 	$('a.edit-user').on('click',_edit);
+	
+	
 
 	$('input.edit-text').keydown(function(e){
 		if(e.which == 13){
 			_submit_edit.call($(this));
 		}
 	});
+
+	$('input[name=priv]').change(function(){
+		var obj = $(this);
+		var data = {};
+		
+		data.field = 'priv';
+		data.val  = obj.val();
+		data.name = $('#username').html();
+		$.ajax({
+			type: 'POST',
+			url: '/index.php/user/edit_user',
+			data: data, 
+			dataType: 'json',
+		})
+		.done(function(j){
+			if(j.status){
+				alert('變更權限為'+data.val);
+			}
+		});
+	});
+
 	$('#pw-field').find('input').keydown(function(e){
 		if(e.which == 13){
 			_submit_pw.call($(this));

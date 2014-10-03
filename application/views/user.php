@@ -48,6 +48,11 @@
 					<span class="warning"></span>
 				<?php endif; ?>
 				</div></li>
+
+				<?php if(isset($allow_edit_priv)): ?>
+				<li><div class="edit-block"><span class="span150">PRIVILEGE</span><input type="radio" class="edit-priv" name="priv" value="user" <?= isset($view['user_priv']) ? 'checked' : '' ?> />USER <input type="radio" class="edit-priv" name="priv" value="admin" <?= isset($view['admin_priv']) ? 'checked' : '' ?> />ADMIN</div></li>
+				<?php endif; ?>
+
 				</ul>
 				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
 				<div id="pw-block">
@@ -82,7 +87,7 @@
 					<li><label class="label150" for="email">*EMAIL</label><input type="text" name="email" maxlength=64 /></li>
 					<li><label class="label150" for="phone">PHONE</label><input type="text" name="phone" maxlength=20 /></li>
 					<li class="vert-align-mid"><label class="label150" for="PAGES">PAGES</label><textarea rows="4" cols="22" name="pages"></textarea></li>
-					<li><label class="label150" for="priv">PRIVILEGE</label><input type="radio" name="user" value="1" checked/>USER <input type="radio" name="admin" value="1" />ADMIN</li>
+					<li><label class="label150" for="priv">PRIVILEGE</label><input type="radio" name="priv" value="user" checked/>USER <input type="radio" name="priv" value="admin" />ADMIN</li>
 					<li><span id="add-user-msg" class="warning">&nbsp;</span></li>
 					</ul>
 					<a id="add-user-submit" class="button" >ADD</a>

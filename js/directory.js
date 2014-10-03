@@ -2,13 +2,19 @@ $(document).ready(function(){
 	$('#member-directory').dataTable();
 	$('.del').click(function(){
 		var obj = $(this);
+		var name = obj.attr('rel');
 		var uid = obj.attr('name');
+		if(!confirm('確定要刪除 '+name+' ?')){
+			return;
+		}
 		$.ajax({
 			url: '/index.php/user/del_user/'+uid,
 			dataType: 'json',
 		})
 		.done(function(j){
-			obj.parent().parent().remove();
+			if(j.status){
+				obj.parent().parent().remove();
+			}
 		});
 	});
 });

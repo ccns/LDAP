@@ -22,20 +22,20 @@ class User_model extends CI_Model {
 		$this->load->database();
 		if(!isset($uid) || $uid == 1){ return FALSE; }
 		$this->db->where('uid',$uid);
-		return $this->db->delete($this->table_name);
+		$ret = $this->db->delete($this->table_name);
+		if(!$ret){
+			return $ret;
+		}
+		return $this->db->affected_rows();
 	}
 	public function get_user($q = array(),$con = array())
 	{
 		$this->load->database();
 		$f = $this->db->list_fields($this->table_name);
 		$valid = array();
-		$where = array();
 		foreach ($f as $n){
 			if(!isset($exclude_fields[$n])){
 				array_push($valid,$n);
-			}
-			if(isset($q[$n])){
-				$where[$n] = $q[$n];
 			}
 		}
 		$this->db->select(join(',',$valid));
@@ -47,9 +47,9 @@ class User_model extends CI_Model {
 			$this->db->limit($con['limit'],$con['offset']);
 		}
 		if(isset($con['like'])){
-			$this->db->like($where);
+			$this->db->like($q);
 		}else{
-			$this->db->where($where);
+			$this->db->where($q);
 		}
 
 		$query = $this->db->get($this->table_name);

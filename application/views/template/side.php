@@ -39,24 +39,11 @@
 			</li>
 
 			<li>
-				<h4>搜尋</h4>
+				<h4>相關連結</h4>
 				<ul>
-				<li class="text">
-				<form method="get" class="searchform" action="#" >
-				<p>
-				<input type="text" size="32" value="" name="s" class="s" />
-
-				</p>
-				</form>	
-				</li>
-				</ul>
-			</li>
-
-			<li>
-				<h4>好用連結</h4>
-				<ul>
-				<li><a href="#" title="CCNS Facebook">CCNS FACEBOOK</a></li>
-				<li><a href="#" title="夢之大地">夢之大地</a></li>
+				<li><a href="https://www.facebook.com/groups/109488833409/" title="NCKU CCNS">NCKU CCNS</a></li>
+				<li><a href="https://www.facebook.com/groups/560735220608315/" title="CCNS 電腦網路愛好社">CCNS 電腦網路愛好社</a></li>
+				<li><a href="#" title="夢之大地">夢之大地 telnet://ccns.cc</a></li>
 				</ul>
 			</li>
 

@@ -37,8 +37,18 @@ class User extends CI_Controller {
 				}
 			}else{
 				$view = $this->user_model->get_user(array('name'=>$name),NULL);
-				if($view){
-					$data['view'] = $view[0];
+				if(!$view || $view[0]['uid'] == 1){
+					return;
+				}
+					
+				$data['view'] = $view[0];
+				if($view[0]['priv'] == $priv['admin']){
+					$data['view']['admin_priv'] = 1;
+				}else{
+					$data['view']['user_priv'] = 1;
+				}
+				if($view[0]['uid'] > 1 && $data['user']['uid'] <= 1){
+					$data['allow_edit_priv'] = 1;
 				}
 				if($data['user']['priv'] == $priv['admin']){
 					$data['allow_edit_user'] = 1;
@@ -197,7 +207,9 @@ class User extends CI_Controller {
 		}
 
 
-		if(!isset($arg['priv'])){
+		if(isset($arg['priv']) && $arg['priv'] == 'admin'){
+			$arg['priv'] = $priv['admin'];
+		}else{
 			$arg['priv'] = 0;
 		}
 
@@ -212,16 +224,22 @@ class User extends CI_Controller {
 		$priv = $this->config->item('privilege');
 		$uid = $this->session->userdata('uid');
 
+		$data['status'] = 0;
+
 		if($uid != FALSE){
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
 		}
 		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
 			return ;
 		}
-		
 		if($del_uid && is_numeric($del_uid)){
-			$this->user_model->del_user($del_uid);	
+			$ret = $this->user_model->del_user($del_uid);	
+			if($ret){
+				$data['status'] = 1;
+			}
 		}
+
+		echo json_encode($data);
 	}
 	public function edit_user()
 	{
@@ -281,7 +299,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return ;
 				}
-				$arg['val'] = $ret['val'];
+				$data['val'] = $arg['val'] = $ret['val'];
 				break;
 			case 'email':
 				$ret = $this->check_email($arg['val']);
@@ -296,6 +314,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return ;
 				}
+				$data['val'] = $arg['val'];
 				break;
 			case 'phone':
 				$ret = $this->check_phone($arg['val']);
@@ -304,7 +323,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return ;
 				}
-				$arg['val'] = $ret['val'];
+				$data['val'] = $arg['val'] = $ret['val'];
 				break;
 			case 'pages':
 				$ret = $this->check_pages($arg['val']);
@@ -313,7 +332,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return ;
 				}
-				$arg['val'] = $ret['val'];
+				$data['val'] = $arg['val'] = $ret['val'];
 				break;
 			case 'pw':
 				$ret = $this->check_pw($arg['val']);
@@ -323,6 +342,14 @@ class User extends CI_Controller {
 					return ;
 				}
 				$arg['val'] = do_hash($arg['val']);
+				break;
+			case 'priv':
+				$target = $this->user_model->get_user(array('name'=>$name),NULL);
+				if($user[0]['priv'] != $priv['admin'] || $target[0]['uid'] <= 1){
+					echo json_encode($data);
+					return ;
+				}
+				$arg['val'] = isset($priv[$arg['val']]) ? $arg['val'] = $priv[$arg['val']] : $priv['user']; 
 				break;
 			default: 
 				$data['status'] = 0;
@@ -341,7 +368,6 @@ class User extends CI_Controller {
 		}
 
 		$data['status'] = 1;
-		$data['val'] = $arg['val'];
 		echo json_encode($data);
 	}
 	
