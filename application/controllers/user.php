@@ -40,7 +40,8 @@ class User extends CI_Controller {
 				if(!$view || $view[0]['uid'] == 1){
 					return;
 				}
-					
+				$view[0] = $this->decode_strings($view[0]);		
+
 				$data['view'] = $view[0];
 				if($view[0]['priv'] == $priv['admin']){
 					$data['view']['admin_priv'] = 1;
@@ -366,12 +367,21 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return ;
 		}
+		if(isset($data['val'])){
+			$data['val'] = htmlentities($data['val'], ENT_QUOTES);
+		}
 
 		$data['status'] = 1;
 		echo json_encode($data);
 	}
 	
 /* private */
+	private function decode_strings($list = array()){
+		foreach ($list as &$v){
+			$v = htmlentities($v,ENT_QUOTES);
+		}
+		return $list;
+	}
 	private function check_name($name = NULL)
 	{
 		$ret = array('status' => 1);

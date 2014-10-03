@@ -173,7 +173,9 @@ form.searchform input {
 form.searchform p {
 	margin: 5px 0;
 }
-
+input.radio-style {
+	border: none;
+}
 
 span.required {
 	color: #ff0000;
@@ -203,7 +205,7 @@ span.warning {
 	margin: 0px 5px;
 	word-wrap: break-word;
 }
-.edit-text, .pw-text {
+.add-text, .edit-text, .pw-text{
 	width: 228px;
 	margin: 0px 5px 0px 0px;
 }
@@ -472,7 +474,7 @@ article .article-info a {
 }
 
 .init-line-height {
-	line-height: initial;
+	line-height: normal; /* initial; */
 }
 
 .hide {

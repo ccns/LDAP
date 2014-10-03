@@ -11,6 +11,7 @@ class Member_directory extends CI_Controller {
 		$data['user'] = NULL;
 		if($uid != FALSE){
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+			$this->decode_strings($user[0]);
 			$data['user'] = $user[0];
 		}
 		if($data['user']){
@@ -18,6 +19,9 @@ class Member_directory extends CI_Controller {
 				$data['allow_delete_user'] = 1;
 			}
 			$user = $this->user_model->get_user(array('uid >'=>'1'),NULL);
+			foreach($user as &$v){
+				$v = $this->decode_strings($v);
+			}
 			$data['list'] = $user;
 		}
 
@@ -26,6 +30,13 @@ class Member_directory extends CI_Controller {
 	}
 	
 /* private */
+	private function decode_strings($list = array()){
+		foreach ($list as &$v){
+			$v = htmlentities($v,ENT_QUOTES);
+		}
+		return $list;
+	}
+
 	private function set_page($page,$data){
 		$this->load->view('template/header',$data);
 		$this->load->view($page);
