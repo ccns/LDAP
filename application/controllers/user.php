@@ -65,7 +65,6 @@ class User extends CI_Controller {
 	public function sign_in()
 	{
 		$this->load->model('user_model');
-		$this->load->helper('security');
 		$arg = $this->input->post(NULL,TRUE);
 
 		$data['status'] = 0;
@@ -89,7 +88,8 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
-		$arg['pw'] = do_hash($arg['pw']);
+		$arg['pw'] = hash('sha256', $arg['pw']);
+
 
 		$user = $this->user_model->get_user(
 						array(
@@ -118,7 +118,6 @@ class User extends CI_Controller {
 	public function add_user()
 	{
 		$this->load->model('user_model');
-		$this->load->helper('security');
 
 		$priv = $this->config->item('privilege');
 		$uid = $this->session->userdata('uid');
@@ -162,7 +161,7 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return ;
 		}
-		$arg['pw'] = do_hash($arg['pw']);
+		$arg['pw'] = hash('sha256', $arg['pw']);
 				
 		$ret = $this->check_email($arg['email']);
 		if($ret['status'] == 0){
@@ -245,7 +244,6 @@ class User extends CI_Controller {
 	public function edit_user()
 	{
 		$this->load->model('user_model');
-		$this->load->helper('security');
 		$priv = $this->config->item('privilege');
 
 		$uid = $this->session->userdata('uid');
@@ -342,7 +340,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return ;
 				}
-				$arg['val'] = do_hash($arg['val']);
+				$arg['val'] = hash('sha256', $arg['val']);
 				break;
 			case 'priv':
 				$target = $this->user_model->get_user(array('name'=>$name),NULL);

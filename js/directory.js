@@ -1,5 +1,5 @@
 $(document).ready(function(){
-	$('#member-directory').dataTable();
+	var table = $('#member-directory').dataTable();
 	$('.del').click(function(){
 		var obj = $(this);
 		var name = obj.attr('rel');
@@ -13,7 +13,7 @@ $(document).ready(function(){
 		})
 		.done(function(j){
 			if(j.status){
-				obj.parent().parent().remove();
+				table.row( obj.parent().parent() ).remove().draw();		
 			}
 		});
 	});

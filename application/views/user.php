@@ -1,7 +1,7 @@
 	<div id="body" class="width">
 	<section id="content">
 		<article>
-			<h2>個人資料</h2>
+			<h2>個人資訊</h2>
 			<div class="article-info"></div>
 	
 			<?php if(isset($user)): ?>
@@ -69,7 +69,8 @@
 			</fieldset>
 			</form>
 			<?php else: ?>
-			<p>您尚未登入!</p>
+			<p></p>
+			<div class="no-signin"><span>您尚未登入!</span></div>
 			<?php endif; ?>
 
 		</article>

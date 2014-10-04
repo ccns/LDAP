@@ -1,17 +1,19 @@
+<?php 
+	if(!isset($mtime)){
+		$mtime = '';
+	}
+?>
     <div id="body" class="width">
 		<section id="content">
 	    <article>
 			<h2>公告</h2>
-			<div class="article-info">Last-modified on <time datetime="2013-05-14"></time> <!--by <a href="#" rel="author">someone</a--></div>
-
-            <p>網頁測試中...</p>	
-            
+			<div class="article-info">Last-modified on <time datetime="<?= $mtime ?>"><?= $mtime ?></time> <!--by <a href="#" rel="author">someone</a--></div>
             <p></p>
 
 
-            <!--ul class="styledlist">
-            </ul-->
-
+            <p>2014/10/4 - 網頁完工</p>	
+            <p></p>
+            
 
 		</article>
         </section>

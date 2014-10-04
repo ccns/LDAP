@@ -469,6 +469,10 @@ article .article-info a {
 	color: #FFFFFF;
 }
 
+.sidebar .sidebar-subtitle {
+	font: 18px bold;
+}
+
 .clear {
 	clear: both;
 }
@@ -482,6 +486,13 @@ article .article-info a {
 }
 .t-hide {
 	display: none;
+}
+.no-signin {
+	border: 1px #ff6666 solid;
+	background-color: #ffcccc;
+	text-align: center;
+	padding: 20px 0px;
+	color: #cc0000;
 }
 
 footer {

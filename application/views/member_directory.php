@@ -39,7 +39,8 @@
 				</tbody>
 			</table>
 			<?php else: ?>
-			<p>您尚未登入!</p>
+			<p></p>
+			<div class="no-signin"><span>您尚未登入!</span></div>
 			<?php endif; ?>
 		</article>
 	</section>

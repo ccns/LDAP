@@ -17,6 +17,7 @@ class Home extends CI_Controller {
 	 * map to /index.php/home/<method_name>
 	 * @see http://codeigniter.com/user_guide/general/urls.html
 	 */
+	private $homefile = 'application/views/home.php';
 	public function index()
 	{
 		$this->load->model('user_model');
@@ -27,6 +28,11 @@ class Home extends CI_Controller {
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
 			$data['user'] = $user[0];
 		}
+		
+		if(file_exists($this->homefile)){
+			$data['mtime'] = date("Y-m-d",filemtime($this->homefile));
+		}
+
 		$data['tab']['home'] = 1;
 		$this->set_page('home',$data);
 	}

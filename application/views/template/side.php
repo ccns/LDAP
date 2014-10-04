@@ -5,8 +5,10 @@
 				<?php if(isset($user)): ?>
 				<div id="sign-out">
 					<ul>
-						<li><span>Hi, <?= $user['name'] ?>.</span></li>
+						<li><span class="sidebar-subtitle">Hi, <?= $user['name'] ?>.</span></li>
+						<li><a href="/index.php/user">個人資訊</a></li>
 					</ul>
+					<p></p>
 					<div class="init-line-height">
 					<a id="sign-out-submit" href="javascript:void(0)" class="button">Sign Out</a>
 					</div>
@@ -41,8 +43,8 @@
 			<li>
 				<h4>相關連結</h4>
 				<ul>
-				<li><a href="https://www.facebook.com/groups/109488833409/" title="NCKU CCNS">NCKU CCNS</a></li>
-				<li><a href="https://www.facebook.com/groups/560735220608315/" title="CCNS 電腦網路愛好社">CCNS 電腦網路愛好社</a></li>
+				<li><a href="https://www.facebook.com/groups/109488833409/" title="NCKU CCNS FACEBOOK" target="_blank">NCKU CCNS FACEBOOK</a></li>
+				<li><a href="https://www.facebook.com/groups/560735220608315/" title="CCNS 電腦網路愛好社 FACEBOOK" target="_blank">CCNS 電腦網路愛好社 FACEBOOK</a></li>
 				<li><a href="#" title="夢之大地">夢之大地 telnet://ccns.cc</a></li>
 				</ul>
 			</li>

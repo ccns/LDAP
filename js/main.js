@@ -28,14 +28,18 @@ $(document).ready(function(){
 			dataType: 'json',
 		})
 		.done(function(j){
-			location.reload();
+			location.replace('/');
 		});
 	});
 
-	$('#sign-in').find('input').keydown(function(e){
+	$('#sign-in').find('input').focusin(function(){
+		$('#sign-in-msg').html('');	
+	})
+	.keydown(function(e){
 		if(e.which == 13){
 			sign_in_submit();	
 		}
+		$('#sign-in-msg').html('');	
 	});
 });
 
