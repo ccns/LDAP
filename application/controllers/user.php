@@ -24,7 +24,6 @@ class User extends CI_Controller {
 			if($user){
 				$data['user'] = $user[0];
 			}
-
 		}
 
 		if($data['user']){
@@ -71,7 +70,7 @@ class User extends CI_Controller {
 
 		if(!isset($arg['name']) || !isset($arg['pw'])){
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		$ret = $this->check_name($arg['name']);
 		if($ret['status'] == 0){
@@ -129,7 +128,7 @@ class User extends CI_Controller {
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
 		}
 		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
-			return ;
+			return;
 		}
 		
 		
@@ -139,19 +138,19 @@ class User extends CI_Controller {
 		if(!isset($arg['name']) || !isset($arg['pw']) || !isset($arg['email'])){
 			$data['msg'] = 'Username, password and email are required.';
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		
 		$ret = $this->check_name($arg['name']);
 		if($ret['status'] == 0){
 			$data['msg'] = $ret['msg'];
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		if($this->user_model->get_user(array('name' => $ret['val']), NULL)){
 			$data['msg'] = 'Username already exists.';
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		$arg['name'] = $ret['val'];
 		
@@ -159,7 +158,7 @@ class User extends CI_Controller {
 		if($ret['status'] == 0){
 			$data['msg'] = $ret['msg'];
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		$arg['pw'] = hash('sha256', $arg['pw']);
 				
@@ -167,13 +166,13 @@ class User extends CI_Controller {
 		if($ret['status'] == 0){
 			$data['msg'] = $ret['msg'];
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		$arg['email'] = $ret['val'];
 		if($this->user_model->get_user(array('email' => $arg['email']), NULL)){
 			$data['msg'] = 'Email already exists.';
 			echo json_encode($data);
-			return ;
+			return;
 		}
 
 		if(isset($arg['realname'])){
@@ -181,7 +180,7 @@ class User extends CI_Controller {
 			if($ret['status'] == 0){
 				$data['msg'] = $ret['msg'];
 				echo json_encode($data);
-				return ;
+				return;
 			}
 			$arg['realname'] = $ret['val'];
 		}
@@ -191,7 +190,7 @@ class User extends CI_Controller {
 			if($ret['status'] == 0){
 				$data['msg'] = $ret['msg'];
 				echo json_encode($data);
-				return ;
+				return;
 			}
 			$arg['phone'] = $ret['val'];
 		}
@@ -201,7 +200,7 @@ class User extends CI_Controller {
 			if($ret['status'] == 0){
 				$data['msg'] = $ret['msg'];
 				echo json_encode($data);
-				return ;
+				return;
 			}
 			$arg['pages'] = $ret['val'];
 		}
@@ -231,7 +230,7 @@ class User extends CI_Controller {
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
 		}
 		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
-			return ;
+			return;
 		}
 		if($del_uid && is_numeric($del_uid)){
 			$ret = $this->user_model->del_user($del_uid);	
@@ -257,7 +256,7 @@ class User extends CI_Controller {
 			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
-			return ;
+			return;
 		}	
 
 		$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
@@ -265,7 +264,7 @@ class User extends CI_Controller {
 			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
-			return ;
+			return;
 		}
 
 		$arg = $this->input->post(NULL,TRUE);
@@ -273,14 +272,14 @@ class User extends CI_Controller {
 			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		
 		if(!isset($arg['field']) || !isset($arg['val'])){
 			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		if($user[0]['priv'] == $priv['admin']){
 			$name = $arg['name'];
@@ -297,7 +296,7 @@ class User extends CI_Controller {
 				if($ret['status'] == 0){
 					$data['msg'] = $ret['msg'];
 					echo json_encode($data);
-					return ;
+					return;
 				}
 				$data['val'] = $arg['val'] = $ret['val'];
 				break;
@@ -306,13 +305,13 @@ class User extends CI_Controller {
 				if($ret['status'] == 0){
 					$data['msg'] = $ret['msg'];
 					echo json_encode($data);
-					return ;
+					return;
 				}
 				$arg['val'] = $ret['val'];
 				if($this->user_model->get_user(array('email' => $arg['val']), NULL)){
 					$data['msg'] = 'Email already exists.';
 					echo json_encode($data);
-					return ;
+					return;
 				}
 				$data['val'] = $arg['val'];
 				break;
@@ -321,7 +320,7 @@ class User extends CI_Controller {
 				if($ret['status'] == 0){
 					$data['msg'] = $ret['msg'];
 					echo json_encode($data);
-					return ;
+					return;
 				}
 				$data['val'] = $arg['val'] = $ret['val'];
 				break;
@@ -330,7 +329,7 @@ class User extends CI_Controller {
 				if($ret['status'] == 0){
 					$data['msg'] = $ret['msg'];
 					echo json_encode($data);
-					return ;
+					return;
 				}
 				$data['val'] = $arg['val'] = $ret['val'];
 				break;
@@ -339,7 +338,7 @@ class User extends CI_Controller {
 				if($ret['status'] == 0){
 					$data['msg'] = $ret['msg'];
 					echo json_encode($data);
-					return ;
+					return;
 				}
 				$arg['val'] = hash('sha256', $arg['val']);
 				$this->user_model->update_timestamp($name);
@@ -348,7 +347,7 @@ class User extends CI_Controller {
 				$target = $this->user_model->get_user(array('name'=>$name),NULL);
 				if($user[0]['priv'] != $priv['admin'] || $target[0]['uid'] <= 1){
 					echo json_encode($data);
-					return ;
+					return;
 				}
 				$arg['val'] = isset($priv[$arg['val']]) ? $arg['val'] = $priv[$arg['val']] : $priv['user']; 
 				break;
@@ -357,7 +356,7 @@ class User extends CI_Controller {
 				$data['msg'] = 'Error. Please try again.';
 				$data['field'] = $arg['field'];
 				echo json_encode($data);
-				return ;
+				return;
 		}
 		$ret = $this->user_model->edit_user(array('name'=>$name),array($arg['field']=>$arg['val']));
 		if($ret == FALSE){
@@ -365,7 +364,7 @@ class User extends CI_Controller {
 			$data['msg'] = 'Error. Please try again.';
 			$data['field'] = $arg['field'];
 			echo json_encode($data);
-			return ;
+			return;
 		}
 		if(isset($data['val'])){
 			$data['val'] = htmlentities($data['val'], ENT_QUOTES);
@@ -373,6 +372,34 @@ class User extends CI_Controller {
 
 		$data['status'] = 1;
 		echo json_encode($data);
+	}
+	public function reset_pw($name = NULL, $token = NULL){
+
+		if(!isset($name) || !isset($token)){
+			return;
+		}
+		if(strlen($name) > 16){
+			return;
+		}
+
+		$this->load->model('user_model');
+
+		$user_token = $this->user_model->get_token($name);
+		if(!$user_token || $user_token != $token){
+			return;
+		}
+
+		$uid = $this->session->userdata('uid');
+		$data['user'] = NULL;
+		if($uid != FALSE){
+			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+			if($user){
+				$data['user'] = $user[0];
+			}
+		}
+		
+		$data['reset_pw']['name'] = $name;
+		$this->set_page('reset_pw',$data);
 	}
 	
 /* private */

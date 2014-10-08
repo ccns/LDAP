@@ -71,7 +71,12 @@ class User_model extends CI_Model {
 		}
 		return $this->db->update('user', $data);
 	}
-	public function update_timestamp($name = NULL){
+	public function get_token($name = NULL)
+	{
+		return false;
+	}
+	public function update_timestamp($name = NULL)
+	{
 		if(!isset($name)){
 			return false;
 		}

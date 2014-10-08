@@ -23,7 +23,7 @@
 						<li><span id="sign-in-msg" class="warning"></span></li>	
 					</ul>
 					<div class="init-line-height">
-					<a id="sign-in-submit" href="javascript:void(0)" class="button">Sign In</a>
+					<a id="sign-in-submit" href="javascript:void(0)" class="button">Sign In</a> <a id="forgot-pw" href="javascript:void(0)">忘記密碼?</a>
 					</div>
 					</fieldset>
 					</form>
