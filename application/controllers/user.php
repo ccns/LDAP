@@ -40,7 +40,7 @@ class User extends CI_Controller {
 				if(!$view || $view[0]['uid'] == 1){
 					return;
 				}
-				$view[0] = $this->decode_strings($view[0]);		
+				$view[0] = $this->encode_strings($view[0]);		
 
 				$data['view'] = $view[0];
 				if($view[0]['priv'] == $priv['admin']){
@@ -214,6 +214,7 @@ class User extends CI_Controller {
 		}
 
 		$this->user_model->add_user($arg);
+		$this->user_model->update_timestamp($arg['name']);
 		
 		$data['status'] = 1;
 		echo json_encode($data);
@@ -341,6 +342,7 @@ class User extends CI_Controller {
 					return ;
 				}
 				$arg['val'] = hash('sha256', $arg['val']);
+				$this->user_model->update_timestamp($name);
 				break;
 			case 'priv':
 				$target = $this->user_model->get_user(array('name'=>$name),NULL);
@@ -374,7 +376,7 @@ class User extends CI_Controller {
 	}
 	
 /* private */
-	private function decode_strings($list = array()){
+	private function encode_strings($list = array()){
 		foreach ($list as &$v){
 			$v = htmlentities($v,ENT_QUOTES);
 		}
@@ -385,7 +387,7 @@ class User extends CI_Controller {
 		$ret = array('status' => 1);
 		if(strlen($name) < 4 || strlen($name) > 16){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Username must be more than 4 characterss and less than 16 characters.';
+			$ret['msg'] = 'Username must be at least 4 characterss and no longer than 16 characters.';
 			return $ret;
 		}
 		$ret['val'] = strtolower($name);
@@ -401,7 +403,7 @@ class User extends CI_Controller {
 		$ret = array('status' => 1);
 		if(strlen($pw) < 6 || strlen($pw) > 16){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Password must be more than 6 characters and less than 16 characters.';
+			$ret['msg'] = 'Password must be at least 6 characters and no longer than 16 characters.';
 			return $ret;
 		
 		}
@@ -422,7 +424,7 @@ class User extends CI_Controller {
 			return $ret;
 		}else if(strlen($email) > 64){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Email must be less than 64 characters.';
+			$ret['msg'] = 'Email must be no longer than 64 characters.';
 			return $ret;
 
 		} 

@@ -15,7 +15,7 @@ $(document).ready(function(){
 		userdata.priv = form.find('[name=priv]').val();
 
 		if(userdata.pw != confirm_pw){
-			$('#add-user-msg').html('Your password and confirmation password do no match.');	
+			$('#add-user-msg').html('Password and confirmation password do no match.');	
 			return;
 		}
 
@@ -82,12 +82,13 @@ $(document).ready(function(){
 		ui_focusout();
 		$('div.edit-block').find('.warning').html('');
 
-		var view_text = $(this).parent().find('.view-text');
-		var edit_text = $(this).parent().find('.edit-text');	
 		var p = $(this).parent();	
+		var view_text = p.find('.view-text');
+		var edit_text = p.find('.edit-text');	
+		var tip = p.find('.tip');
 		
 		var text = view_text.html();
-		$(this).parent().find('.urls').each(function(){
+		p.find('.urls').each(function(){
 			text = '';
 			$(this).find('.split').each(function(){
 				text += $(this).html()+'\n';
@@ -102,6 +103,7 @@ $(document).ready(function(){
 			edit_text.val(text);
 			edit_text.removeClass('hide');
 			edit_text.focus();
+			tip.removeClass('hide');
 		}
 
 		p.on('click',function(e){ e.stopPropagation(); });
@@ -144,8 +146,9 @@ $(document).ready(function(){
 	}
 	function _recover_edit(e){
 		var view_text = $(this).find('.view-text');
+		var edit_text = $(this).find('.edit-text');
+		var tip = $(this).find('.tip');
 		var btn = $(this).find('.edit-user');
-		var edit_text = $(this).find('.edit-text');;
 
 		if(view_text.hasClass('hide')){
 			view_text.removeClass('hide');
@@ -154,6 +157,7 @@ $(document).ready(function(){
 			edit_text.addClass('hide');
 			edit_text.val('');
 			btn.html('edit').off().on('click',_edit);
+			tip.addClass('hide');
 			$(this).off();
 		}
 	}
@@ -185,7 +189,7 @@ $(document).ready(function(){
 		var confirm_pw = pw_field.find('input[name=confirm]').val();
 
 		if(data.val != confirm_pw){
-			pw_field.find('.warning').html('Your password and confirmation password do no match.');	
+			pw_field.find('.warning').html('Password and confirmation password do no match.');	
 			pw_field.find('input').val('');
 			return;
 		}

@@ -11,7 +11,7 @@ class Member_directory extends CI_Controller {
 		$data['user'] = NULL;
 		if($uid != FALSE){
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
-			$this->decode_strings($user[0]);
+			$this->encode_strings($user[0]);
 			$data['user'] = $user[0];
 		}
 		if($data['user']){
@@ -20,7 +20,7 @@ class Member_directory extends CI_Controller {
 			}
 			$user = $this->user_model->get_user(array('uid >'=>'1'),NULL);
 			foreach($user as &$v){
-				$v = $this->decode_strings($v);
+				$v = $this->encode_strings($v);
 			}
 			$data['list'] = $user;
 		}
@@ -30,7 +30,7 @@ class Member_directory extends CI_Controller {
 	}
 	
 /* private */
-	private function decode_strings($list = array()){
+	private function encode_strings($list = array()){
 		foreach ($list as &$v){
 			$v = htmlentities($v,ENT_QUOTES);
 		}

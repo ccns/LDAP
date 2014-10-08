@@ -46,6 +46,7 @@
 					<textarea rows = "4" cols="22" class="edit-text hide" name="pages" value="" maxlength="512"></textarea>
 					<a class="button edit-user" href="javascript:void(0)">edit</a>
 					<span class="warning"></span>
+					<br /><span class="tip hide"><span class="span150">&nbsp;</span><span>(e.g. www.facebook.com/myname, www.mypage.com)</span></span>
 				<?php endif; ?>
 				</div></li>
 
@@ -57,7 +58,7 @@
 				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
 				<div id="pw-block">
 				<ul id="pw-field" class="list-in-form hide">
-				<li><span class="span150">NEW PASSWORD</span><input type="password" name="pw" class="pw-text" maxlength="16"/></li>
+				<li><span class="span150">NEW PASSWORD</span><input type="password" name="pw" class="pw-text" maxlength="16"/><br /><span class="span150">&nbsp;</span><span>(6 ~ 16 characters)</span></li>
 				<li><span class="span150">CONFIRM</span><input type="password" name="confirm" class="pw-text" maxlength="16"/></li>
 				<li><span class="warning"></span></li>
 				</ul>

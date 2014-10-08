@@ -71,5 +71,13 @@ class User_model extends CI_Model {
 		}
 		return $this->db->update('user', $data);
 	}
+	public function update_timestamp($name = NULL){
+		if(!isset($name)){
+			return false;
+		}
+		$data['pw_timestamp'] = (string)time();	
+		$this->db->where('name', $name);
+		return $this->db->update('user', $data);
+	}
 }
 ?>
