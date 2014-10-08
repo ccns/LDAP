@@ -4,7 +4,7 @@ body {
 	background: #fff;
 	margin:0;
 	padding:0;
-	font-family: 'Pontano Sans', Arial, Helvetica, sans-serif;
+	font-family: '微軟正黑體', 'Microsoft JhengHei', 'Pontano Sans', Arial, Helvetica, sans-serif;
 	font-size: 16px;
 	color: #666;
 }
@@ -54,7 +54,7 @@ blockquote {
 
 blockquote p {
 	font-style: italic;
-	font-family: Georgia, "Times New Roman", Times, serif;
+	font-family: '微軟正黑體', 'Microsoft Jhenghei', Georgia, "Times New Roman", Times, serif;
 	margin: 0;
 	color: #333;
 	height: 1%;
@@ -94,6 +94,12 @@ a.button {
 
 a.button:hover {
 	background-color: #FF6D29;
+}
+
+#forgot-pw {
+	float: right; 
+	font-size: 13px;
+	padding: 8px 15px;
 }
 
 
@@ -139,7 +145,7 @@ fieldset label.label150 {
 	width: 150px;
 }
 .vert-align-mid *{
-	vertical-align:middle;
+	vertical-align: middle;
 }
 
 form input, form select, form textarea {
@@ -149,7 +155,7 @@ form input, form select, form textarea {
 	border-right:1px solid #ccc;
 	border-bottom:1px solid #ccc;
 	background-color:#fff;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: '微軟正黑體', 'Microsoft Jhenghei', Arial, Helvetica, sans-serif;
 	font-size: 13px;
 }
 
@@ -213,7 +219,7 @@ span.warning {
 h1 {
 	color: #000;
 	font-size: 35px;
-	font-family: 'Pontano Sans', Arial, sans-serif;
+	font-family: '微軟正黑體', 'Microsoft Jhenghei', 'Pontano Sans', Arial, sans-serif;
 }
 
 h2 {
@@ -223,7 +229,7 @@ h2 {
 	font-weight: normal;
 	padding: 0 0 5px;
 	margin: 0;
-	font-family: 'Pontano Sans', Arial, sans-serif;
+	font-family: '微軟正黑體', 'Microsoft Jhenghei', 'Pontano Sans', Arial, sans-serif;
 }
 
 h3 {
@@ -232,11 +238,11 @@ h3 {
 	font-weight: normal;
 	margin-bottom: 10px;
 	letter-spacing: -1px;
-	font-family: 'Pontano Sans', Arial, sans-serif;
+	font-family: '微軟正黑體', 'Microsoft Jhenghei', 'Pontano Sans', Arial, sans-serif;
 }
 
 h4 {
-    font-family: 'Pontano Sans', Arial, sans-serif;
+    font-family: '微軟正黑體', 'Microsoft Jhenghei', 'Pontano Sans', Arial, sans-serif;
     color: #FF6D29;
     font-size: 18px;
     font-weight: normal;
@@ -341,7 +347,7 @@ nav ul li {
 nav ul li a {
     color: #999;
     display: block;
-    font-family: 'Pontano Sans',Arial,sans-serif;
+    font-family: '微軟正黑體', 'Microsoft Jhenghei', 'Pontano Sans',Arial,sans-serif;
     font-size: 13px;
     letter-spacing: 0;
    margin: 0;
@@ -479,6 +485,7 @@ article .article-info a {
 
 .init-line-height {
 	line-height: normal; /* initial; */
+	vertical-align: middle; 
 }
 
 .hide {
