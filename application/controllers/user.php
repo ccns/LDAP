@@ -31,9 +31,6 @@ class User extends CI_Controller {
 			if(!$name || $name == $this->session->userdata('name')){
 				$data['view'] = $user[0];
 				$data['local_view'] = 1;
-				if($data['user']['priv'] == $priv['admin']){
-					$data['allow_add_user'] = 1;
-				}
 			}else{
 				$view = $this->user_model->get_user(array('name'=>$name),NULL);
 				if(!$view || $view[0]['uid'] == 1){
@@ -47,12 +44,13 @@ class User extends CI_Controller {
 				}else{
 					$data['view']['user_priv'] = 1;
 				}
+
 				if($view[0]['uid'] > 1 && $data['user']['uid'] <= 1){
 					$data['allow_edit_priv'] = 1;
 				}
-				if($data['user']['priv'] == $priv['admin']){
-					$data['allow_edit_user'] = 1;
-				}
+			}
+			if($data['user']['priv'] == $priv['admin']){
+				$data['allow_edit_user'] = 1;
 			}
 		}
 		
@@ -60,7 +58,25 @@ class User extends CI_Controller {
 		$this->set_page('user',$data);
 
 	}
-	
+	public function new_user()
+	{
+		$this->load->model('user_model');
+		$priv = $this->config->item('privilege');
+		$uid = $this->session->userdata('uid');
+
+		if($uid != FALSE){
+			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+			if($user){
+				$data['user'] = $user[0];
+			}
+		}
+		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
+			return;
+		}
+		$data['allow_edit_user'] = 1;
+		$data['tab']['new_user'] = 1;
+		$this->set_page('new_user',$data);
+	}	
 	public function sign_in()
 	{
 		$this->load->model('user_model');

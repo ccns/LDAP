@@ -21,12 +21,16 @@ class Home extends CI_Controller {
 	public function index()
 	{
 		$this->load->model('user_model');
+		$priv = $this->config->item('privilege');
 		$uid = $this->session->userdata('uid');
 
 		$data['user'] = NULL;
 		if($uid != FALSE){
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
 			$data['user'] = $user[0];
+		}
+		if(isset($user) && $user[0]['priv'] == $priv['admin']){
+			$data['allow_edit_user'] = 1;
 		}
 		
 		if(file_exists($this->homefile)){

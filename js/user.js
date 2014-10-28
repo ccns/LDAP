@@ -1,4 +1,5 @@
 $(document).ready(function(){
+/*
 	$('#add-user-submit').click(function(){
 		var userdata = {};
 		var form = $('#add-user');
@@ -34,7 +35,7 @@ $(document).ready(function(){
 			}
 		});
 	});
-
+*/
 	$('body').on('click',ui_focusout);
 
 	function ui_focusout(e){

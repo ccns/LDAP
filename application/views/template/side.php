@@ -7,6 +7,9 @@
 					<ul>
 						<li><span class="sidebar-subtitle">Hi, <?= $user['name'] ?>.</span></li>
 						<li><a href="/index.php/user">個人資訊</a></li>
+						<?php if(isset($allow_edit_user)): ?>
+						<li><a href="/index.php/user/new_user">新增使用者</a></li>
+						<?php endif; ?>
 					</ul>
 					<p></p>
 					<div class="init-line-height">
