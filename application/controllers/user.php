@@ -428,9 +428,9 @@ class User extends CI_Controller {
 	private function check_name($name = NULL)
 	{
 		$ret = array('status' => 1);
-		if(strlen($name) < 4 || strlen($name) > 16){
+		if(strlen($name) < 3 || strlen($name) > 16){
 			$ret['status'] = 0;
-			$ret['msg'] = 'Username must be at least 4 characterss and no longer than 16 characters.';
+			$ret['msg'] = 'Username must be at least 3 characterss and no longer than 16 characters.';
 			return $ret;
 		}
 		$ret['val'] = strtolower($name);

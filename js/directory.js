@@ -13,7 +13,9 @@ $(document).ready(function(){
 		})
 		.done(function(j){
 			if(j.status){
-				table.row( obj.parent().parent() ).remove().draw();		
+				obj.parents('tr').fadeOut('fast',function(){
+					$(this).remove();
+				});	
 			}
 		});
 	});
