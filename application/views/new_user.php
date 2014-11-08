@@ -13,7 +13,9 @@
 				<li><label class="label150" for="email">*EMAIL</label><input type="text" class="add-text" name="email" maxlength="64" /></li>
 				<li><label class="label150" for="phone">PHONE</label><input type="text" class="add-text" name="phone" maxlength="20" /></li>
 				<li class="vert-align-mid"><label class="label150" for="PAGES">PAGES</label><textarea rows="4" cols="22" class="add-text" name="pages" maxlength="64"></textarea></li>
+				<?php if(isset($allow_edit_priv)): ?>
 				<li><label class="label150" for="priv">PRIVILEGE</label><input type="radio" class="radio-style" name="priv" value="user" checked/>USER <input type="radio" class="radio-style" name="priv" value="admin" />ADMIN</li>
+				<?php endif; ?>
 				<li><span id="add-user-msg" class="warning"></span></li>
 				</ul>
 				<a id="add-user-submit" class="button" >ADD</a>

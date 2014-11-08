@@ -54,6 +54,10 @@
 				<li><div class="edit-block"><span class="span150">PRIVILEGE</span><input type="radio" class="edit-priv radio-style" name="priv" value="user" <?= isset($view['user_priv']) ? 'checked' : '' ?> />USER <input type="radio" class="edit-priv radio-style" name="priv" value="admin" <?= isset($view['admin_priv']) ? 'checked' : '' ?> />ADMIN</div></li>
 				<?php endif; ?>
 
+				<?php if(isset($local_view) && isset($allow_edit_user)): ?>
+				<li><div class="edit-block"><span class="span150">PRIVILEGE</span>ADMIN</div></li>
+				
+				<?php endif; ?>
 				</ul>
 				<?php if(isset($local_view) || isset($allow_edit_user)): ?>
 				<div id="pw-block">

@@ -37,7 +37,6 @@ class User extends CI_Controller {
 					return;
 				}
 				$view[0] = $this->encode_strings($view[0]);		
-
 				$data['view'] = $view[0];
 				if($view[0]['priv'] == $priv['admin']){
 					$data['view']['admin_priv'] = 1;
@@ -72,6 +71,9 @@ class User extends CI_Controller {
 		}
 		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
 			return;
+		}
+		if($data['user']['uid'] <= 1){
+			$data['allow_edit_priv'] = 1;
 		}
 		$data['allow_edit_user'] = 1;
 		$data['tab']['new_user'] = 1;
@@ -222,7 +224,7 @@ class User extends CI_Controller {
 		}
 
 
-		if(isset($arg['priv']) && $arg['priv'] == 'admin'){
+		if(isset($arg['priv']) && $arg['priv'] == 'admin' && $user[0]['uid'] < 1){
 			$arg['priv'] = $priv['admin'];
 		}else{
 			$arg['priv'] = 0;
@@ -252,6 +254,10 @@ class User extends CI_Controller {
 			$ret = $this->user_model->del_user($del_uid);	
 			if($ret){
 				$data['status'] = 1;
+			}
+			if($del_uid == $uid){
+				$this->session->sess_destroy();
+				$data['reload'] = 1;
 			}
 		}
 
@@ -471,7 +477,7 @@ class User extends CI_Controller {
 			return $ret;
 
 		} 
-		if(!preg_match("/^([a-zA-Z0-9_-]+)(@[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+))+$/",$email,$match)){
+		if(!preg_match("/^([.a-zA-Z0-9_-]+)(@[a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+))+$/",$email,$match)){
 			$ret['status'] = 0;
 			$ret['msg'] = 'Invalid email.';
 			return $ret;
