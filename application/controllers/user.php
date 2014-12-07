@@ -115,16 +115,31 @@ class User extends CI_Controller {
 						),
 						NULL
 						);
-		if($user != FALSE){
-			$data['status'] = 1;
-			$this->session->set_userdata(
-						array(
-							'uid' => $user[0]['uid'],
-							'name' => $user[0]['name'],
-							'email' => $user[0]['email'],
-						));
-						
+
+		if($user == FALSE){
+			$user = $this->user_model->get_user(
+							array(
+								'name'=>$arg['name'],
+								'tmp_pw'=>$arg['pw']
+							),
+							NULL
+							);
+			if($user == FALSE){
+				echo json_encode($data);
+				return;			
+			}
 		}
+
+		$data['status'] = 1;
+		$this->session->set_userdata(
+					array(
+						'uid' => $user[0]['uid'],
+						'name' => $user[0]['name'],
+						'email' => $user[0]['email'],
+					));
+
+		$ret = $this->user_model->edit_user(array('name'=>$user[0]['name']),array('tmp_pw'=>''));
+
 		echo json_encode($data); 
 	}
 	public function sign_out()
@@ -395,6 +410,71 @@ class User extends CI_Controller {
 		$data['status'] = 1;
 		echo json_encode($data);
 	}
+	public function forgot_pw(){
+		
+		$this->load->model('user_model');
+
+		$uid = $this->session->userdata('uid');
+		if($uid != FALSE){
+			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+			if($user){
+				header('Location: /index.php/home/');
+				return;
+			}
+		}
+
+		$data['tab']['forgot_pw'] = 1;
+		$this->set_page('forgot_pw',$data);
+	}
+	public function forgot_pw_proc(){
+	
+		$this->load->model('user_model');
+		$this->load->helper('string');
+	
+		$arg = $this->input->post(NULL,TRUE);
+
+		$data['status'] = 0;
+
+		if(!isset($arg['name']) || !isset($arg['email'])){
+			$data['msg'] = 'Wrong user or email.';
+			echo json_encode($data);
+			return;
+		}
+
+		$ret = $this->check_name($arg['name']);
+		if($ret['status'] == 0){
+			$data['msg'] = 'Wrong user or email.';
+			echo json_encode($data);
+			return;
+		}
+
+		$ret = $this->check_email($arg['email']);
+		if($ret['status'] == 0){
+			$data['msg'] = 'Wrong user or email.';
+			echo json_encode($data);
+			return;
+		}
+
+		$user = $this->user_model->get_user(array('name'=>$arg['name'],'email'=>$arg['email']),NULL);
+		if(!$user){
+			$data['msg'] = 'Wrong user or email.';
+			echo json_encode($data);
+			return;
+		}
+
+		$tmp_pw = random_string('alnum',8);
+		$tmp_pw_hash = hash('sha256', $tmp_pw);
+
+		$ret = $this->user_model->edit_user(array('name'=>$arg['name']),array('tmp_pw'=>$tmp_pw_hash));
+
+		$name = preg_replace("/\"|\'/","",$user[0]['realname']);
+
+		exec('scripts/forgot_pw.sh '.$name.' '.escapeshellarg($arg['email']).' '.$tmp_pw,$res);
+
+		$data['status'] = 1;
+		echo json_encode($data);
+	}
+/*
 	public function reset_pw($name = NULL, $token = NULL){
 
 		if(!isset($name) || !isset($token)){
@@ -423,7 +503,7 @@ class User extends CI_Controller {
 		$data['reset_pw']['name'] = $name;
 		$this->set_page('reset_pw',$data);
 	}
-	
+*/	
 /* private */
 	private function encode_strings($list = array()){
 		foreach ($list as &$v){

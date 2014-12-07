@@ -2,7 +2,7 @@
 class User_model extends CI_Model {
 
 	var $table_name = "user";
-	var $exclude_fields = array('pw' => 1);
+	var $exclude_fields = array('pw' => 1,'tmp_pw' => 1);
 
 	public function add_user($q)
 	{

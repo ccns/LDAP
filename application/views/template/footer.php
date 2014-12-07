@@ -26,6 +26,8 @@
 <script src="/js/user.js"></script>
 <?php elseif(isset($tab['new_user'])): ?>
 <script src="/js/new_user.js"></script>
+<?php elseif(isset($tab['forgot_pw'])): ?>
+<script src="/js/forgot_pw.js"></script>
 <?php elseif(isset($tab['member_directory'])): ?>
 <script src="/js/directory.js"></script>
 <?php endif; ?>
