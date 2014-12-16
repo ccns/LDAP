@@ -469,41 +469,11 @@ class User extends CI_Controller {
 
 		$name = preg_replace("/\"|\'/","",$user[0]['realname']);
 
-		exec('scripts/forgot_pw.sh '.$name.' '.escapeshellarg($arg['email']).' '.$tmp_pw,$res);
+		exec('scripts/forgot_pw.sh "'.$name.'" '.escapeshellarg($arg['email']).' '.$tmp_pw,$res);
 
 		$data['status'] = 1;
 		echo json_encode($data);
 	}
-/*
-	public function reset_pw($name = NULL, $token = NULL){
-
-		if(!isset($name) || !isset($token)){
-			return;
-		}
-		if(strlen($name) > 16){
-			return;
-		}
-
-		$this->load->model('user_model');
-
-		$user_token = $this->user_model->get_token($name);
-		if(!$user_token || $user_token != $token){
-			return;
-		}
-
-		$uid = $this->session->userdata('uid');
-		$data['user'] = NULL;
-		if($uid != FALSE){
-			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
-			if($user){
-				$data['user'] = $user[0];
-			}
-		}
-		
-		$data['reset_pw']['name'] = $name;
-		$this->set_page('reset_pw',$data);
-	}
-*/	
 /* private */
 	private function encode_strings($list = array()){
 		foreach ($list as &$v){

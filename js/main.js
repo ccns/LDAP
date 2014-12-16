@@ -41,5 +41,39 @@ $(document).ready(function(){
 		}
 		$('#sign-in-msg').html('');	
 	});
+
+	$( window ).konami({
+		cheat: function(){
+			var img = $('#mimg');
+			var width = $(document).width() - img.width();
+			var height = $(document).height();
+			var dir = Math.round(Math.random())*2 -1
+			var ep = Math.random()
+			var pos = {};
+
+			pos.top = (height*(dir+1) + (dir-1)*img.height())/2;	
+			pos.left = Math.round(ep*width);
+			console.log(pos);
+			img.removeClass('hide');
+			img.css(pos);
+			if(dir > 0){
+				img.addClass('yflip');
+			}
+			img.animate({
+				top: "+=" + (-dir)*img.height()*2/3,
+			},
+			800,
+			function(){
+				$(this).animate({
+					top: "+=" + dir*img.height()*2/3,
+				},
+				800,
+				function(){
+					$(this).addClass('hide');
+					$(this).removeClass('yflip');
+				});
+			});
+		}
+	});
 });
 

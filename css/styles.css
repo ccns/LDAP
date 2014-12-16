@@ -494,6 +494,17 @@ article .article-info a {
 .t-hide {
 	display: none;
 }
+
+.yflip {
+	-moz-transform: scaleY(-1);
+	-o-transform: scaleY(-1);
+	-webkit-transform: scaleY(-1);
+	-ms-transform: scaleY(-1);
+	transform: scaleY(-1);
+	-ms-filter: "FlipV";
+	filter: FlipV;
+}
+
 .no-signin {
 	border: 1px #ff6666 solid;
 	background-color: #ffcccc;
@@ -572,4 +583,9 @@ footer .footer-bottom p {
 
 footer .footer-bottom p, footer .footer-bottom p a {
 	color: #666;
+}
+
+#mimg {
+	position: absolute;
+	z-index: +99;	
 }
