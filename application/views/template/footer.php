@@ -17,7 +17,7 @@
          </div>
     </footer>
 </div>
-<img id="mimg" src="img/m.png" class="hide"/>
+<img id="mimg" src="/img/m.png" class="hide"/>
 <!-- end of container -->
 </body>
 <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>

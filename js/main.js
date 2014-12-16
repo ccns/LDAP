@@ -53,7 +53,6 @@ $(document).ready(function(){
 
 			pos.top = (height*(dir+1) + (dir-1)*img.height())/2;	
 			pos.left = Math.round(ep*width);
-			console.log(pos);
 			img.removeClass('hide');
 			img.css(pos);
 			if(dir > 0){
