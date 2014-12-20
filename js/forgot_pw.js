@@ -19,12 +19,15 @@ $(document).ready(function(){
 			dataType: 'json',
 		})
 		.done(function(j){
+			$('#forgot-pw-form .warning').html('');
 			if(j.status){
 				alert('信件已寄出.');
 			}else{
 				$('#forgot-pw-form .warning').html(j.msg);
 			}
 		});
+		$('#forgot-pw-form .warning').html($('#loader').clone().removeClass('hide'));
+		
 	});
 
 });

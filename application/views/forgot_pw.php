@@ -8,8 +8,8 @@
 			<ul class="list-in-form">
 				<li><span class="span150">NAME</span><input type="text" name="name" class="edit-text" maxlength="16"/></li>
 				<li><span class="span150">EMAIL</span><input type="text" name="email" class="edit-text" maxlength="64"/></li>
-				<li><span class="warning"></span></li>
-				<li><div><span Class="span150">&nbsp</span><a id="forgot-pw-submit" class="button" href="javascript:void(0)">submit</a></div></li>
+				<li><div><span class="span150">&nbsp</span><span class="warning"></span></div></li>
+				<li><div><span class="span150">&nbsp</span><a id="forgot-pw-submit" class="button" href="javascript:void(0)">submit</a></div></li>
 			</ul>
 			</form>
 	    </article>
