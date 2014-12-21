@@ -1,6 +1,6 @@
 $(document).ready(function(){
 	var table = $('#member-directory').dataTable();
-	$('.del').click(function(){
+	$('#member-directory tbody').on('click', 'a.del', function(){
 		var obj = $(this);
 		var name = obj.attr('rel');
 		var uid = obj.attr('name');

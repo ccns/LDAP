@@ -82,6 +82,7 @@ class User extends CI_Controller {
 	public function sign_in()
 	{
 		$this->load->model('user_model');
+		$this->load->model('log_model');
 		$arg = $this->input->post(NULL,TRUE);
 
 		$data['status'] = 0;
@@ -139,6 +140,7 @@ class User extends CI_Controller {
 					));
 
 		$ret = $this->user_model->edit_user(array('name'=>$user[0]['name']),array('tmp_pw'=>''));
+		$this->log_model->add_log(array('sname'=>$user[0]['name'],'act'=>'login'));
 
 		echo json_encode($data); 
 	}
@@ -150,6 +152,7 @@ class User extends CI_Controller {
 	public function add_user()
 	{
 		$this->load->model('user_model');
+		$this->load->model('log_model');
 
 		$priv = $this->config->item('privilege');
 		$uid = $this->session->userdata('uid');
@@ -247,6 +250,7 @@ class User extends CI_Controller {
 
 		$this->user_model->add_user($arg);
 		$this->user_model->update_timestamp($arg['name']);
+		$this->log_model->add_log(array('sname'=>$user[0]['name'],'oname'=>$arg['name'],'act'=>'add user'));
 		
 		$data['status'] = 1;
 		echo json_encode($data);
@@ -254,6 +258,7 @@ class User extends CI_Controller {
 	public function del_user($del_uid = NULL)
 	{
 		$this->load->model('user_model');
+		$this->load->model('log_model');
 		$priv = $this->config->item('privilege');
 		$uid = $this->session->userdata('uid');
 
@@ -265,6 +270,7 @@ class User extends CI_Controller {
 		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
 			return;
 		}
+		$ousr = $this->user_model->get_user(array('uid'=>$del_uid),NULL);
 		if($del_uid && is_numeric($del_uid)){
 			$ret = $this->user_model->del_user($del_uid);	
 			if($ret){
@@ -275,12 +281,16 @@ class User extends CI_Controller {
 				$data['reload'] = 1;
 			}
 		}
+		if($data['status'] && $ousr){
+			$this->log_model->add_log(array('sname'=>$user[0]['name'],'oname'=>$ousr[0]['name'],'act'=>'del user'));
+		}
 
 		echo json_encode($data);
 	}
 	public function edit_user()
 	{
 		$this->load->model('user_model');
+		$this->load->model('log_model');
 		$priv = $this->config->item('privilege');
 
 		$uid = $this->session->userdata('uid');
@@ -288,9 +298,9 @@ class User extends CI_Controller {
 		$user = NULL;
 		$data = NULL;
 		$name = NULL;
+		$data['status'] = 0;
 
 		if($uid == FALSE){
-			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
 			return;
@@ -298,7 +308,6 @@ class User extends CI_Controller {
 
 		$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
 		if(!$user){
-			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
 			return;
@@ -306,14 +315,12 @@ class User extends CI_Controller {
 
 		$arg = $this->input->post(NULL,TRUE);
 		if(!$arg){
-			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
 			return;
 		}
 		
 		if(!isset($arg['field']) || !isset($arg['val'])){
-			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			echo json_encode($data);
 			return;
@@ -389,7 +396,6 @@ class User extends CI_Controller {
 				$arg['val'] = isset($priv[$arg['val']]) ? $arg['val'] = $priv[$arg['val']] : $priv['user']; 
 				break;
 			default: 
-				$data['status'] = 0;
 				$data['msg'] = 'Error. Please try again.';
 				$data['field'] = $arg['field'];
 				echo json_encode($data);
@@ -397,7 +403,6 @@ class User extends CI_Controller {
 		}
 		$ret = $this->user_model->edit_user(array('name'=>$name),array($arg['field']=>$arg['val']));
 		if($ret == FALSE){
-			$data['status'] = 0;
 			$data['msg'] = 'Error. Please try again.';
 			$data['field'] = $arg['field'];
 			echo json_encode($data);
@@ -408,6 +413,8 @@ class User extends CI_Controller {
 		}
 
 		$data['status'] = 1;
+		$this->log_model->add_log(array('sname'=>$user[0]['name'],'oname'=>$name,'act'=>'edit user','desc'=>'field: '.$arg['field']));
+
 		echo json_encode($data);
 	}
 	public function forgot_pw(){
@@ -429,6 +436,7 @@ class User extends CI_Controller {
 	public function forgot_pw_proc(){
 	
 		$this->load->model('user_model');
+		$this->load->model('log_model');
 		$this->load->helper('string');
 	
 		$arg = $this->input->post(NULL,TRUE);
@@ -470,6 +478,8 @@ class User extends CI_Controller {
 		$name = preg_replace("/\"|\'/","",$user[0]['realname']);
 
 		exec('scripts/forgot_pw.sh "'.$name.'" '.escapeshellarg($arg['email']).' '.$tmp_pw,$res);
+
+		$this->log_model->add_log(array('sname'=>$arg['name'],'act'=>'forgot pw','desc'=>'ip: '.$this->input->ip_address()));
 
 		$data['status'] = 1;
 		echo json_encode($data);
