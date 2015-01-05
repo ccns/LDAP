@@ -8,7 +8,7 @@
 				<ul class="list-in-form">
 				<li><label class="label150" for="name">*NAME</label><input type="text" class="add-text" name="name" maxlength="16" /><br /><span class="span150">&nbsp;</span><span>(3 - 16 characters)</span></li>
 				<li><label class="label150" for="realname">REAL NAME</label><input type="text" class="add-text" name="realname" maxlength="16" /></li>
-				<li><label class="label150" for="pw">*PASSWORD</label><input type="password" class="add-text" name="pw" maxlength="16" /><a href="javascript:void()" class="button" id="auto-gen" >Auto</a><br />
+				<li><label class="label150" for="pw">*PASSWORD</label><input type="password" class="add-text" name="pw" maxlength="16" /><a href="javascript:void(0)" class="button" id="auto-gen" >Auto</a><br />
 				<span class="span150"></span><span>(6 - 16 characters)</span><br />
 				<span class="span150"></span><input type="checkbox" id="show-pw" class="form-checkbox"/> Show Password
 				</li>

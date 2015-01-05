@@ -36,7 +36,7 @@ $(document).ready(function(){
 	});
 	$('#auto-gen').click(function(e){
 		e.stopPropagation();
-		var gen = (Math.random()*10).toString(36).replace(/[^a-z0-9]+/g, '').substr(3, 8);	
+		var gen = Math.random().toString(36).replace(/[^a-z0-9]+/g, '').substr(3, 8);	
 		$('#add-user').find('[name=pw]').val(gen);
 		$('#add-user').find('[name=confirm]').val(gen);
 		$('#show-pw').prop('checked',true);
@@ -49,6 +49,12 @@ $(document).ready(function(){
 		}else{
 			hide_pw();
 		}
+	});
+	$('#add-user').find('[name=pw]').click(function(e){
+		e.stopPropagation();
+	});
+	$('#add-user').find('[name=confirm]').click(function(e){
+		e.stopPropagation();
 	});
 	function show_pw(){
 		$('#add-user').find('[name=pw]').attr('type','text');
