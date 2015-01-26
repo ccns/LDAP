@@ -3,6 +3,7 @@ class User_model extends CI_Model {
 
 	var $table_name = "user";
 	var $exclude_fields = array('pw' => 1,'tmp_pw' => 1);
+	var $uneditable_fields = array('uid' => 1);
 
 	public function add_user($q)
 	{
@@ -12,7 +13,9 @@ class User_model extends CI_Model {
 		$data = array();	
 		
 		foreach ($f as $v){
-			$data[$v] = isset($q[$v]) ? $q[$v] : '';
+			if(!isset($this->uneditable_fields[$v])){
+				$data[$v] = isset($q[$v]) ? $q[$v] : '';
+			}
 		}	
 		
 		return $this->db->insert($this->table_name,$data);
@@ -34,7 +37,7 @@ class User_model extends CI_Model {
 		$f = $this->db->list_fields($this->table_name);
 		$valid = array();
 		foreach ($f as $n){
-			if(!isset($exclude_fields[$n])){
+			if(!isset($this->exclude_fields[$n])){
 				array_push($valid,$n);
 			}
 		}
@@ -62,7 +65,7 @@ class User_model extends CI_Model {
 		$f = $this->db->list_fields($this->table_name);
 		$data = array();
 		foreach ($f as $v){
-			if(isset($edit[$v])){
+			if(isset($edit[$v]) && !isset($this->uneditable_fields[$v])){
 				$data[$v] = $edit[$v];
 			}
 			if(isset($q[$v])){

@@ -1,12 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
 class User extends CI_Controller {
-
-	public function test()
-	{
-		$data['status'] = 1;
-		echo json_encode($data);
-	}
+/* pages */
 	public function index()
 	{
 		$this->page();
@@ -79,6 +74,37 @@ class User extends CI_Controller {
 		$data['tab']['new_user'] = 1;
 		$this->set_page('new_user',$data);
 	}	
+	public function registration($hash = NULL)
+	{
+		$this->load->model('user_model');
+		$priv = $this->config->item('privilege');
+		$exp = $this->config->item('expiration');
+
+		if(!isset($hash) || strlen($hash) == 0){
+			return;
+		}
+
+		$user = $this->user_model->get_user(
+						array(
+							'tmp_pw'=>$hash
+						),
+						NULL
+						);
+		if($user == FALSE || !isset($user[0]['email']) || $user[0]['priv'] != $priv['unregistered']){
+			return;
+		}
+		if(isset($exp['registration']) && (time() - (int)$user[0]['pw_timestamp'] > $exp['registration'])){
+			return;
+		}
+
+		$data['email'] = $user[0]['email'];
+		$data['hash'] = $hash;
+		$data['invited'] = 1;
+		$data['allow_edit_user'] = 1;
+		$data['tab']['new_user'] = 1;
+		$this->set_page('new_user',$data);
+	}
+/* operations */
 	public function sign_in()
 	{
 		$this->load->model('user_model');
@@ -93,7 +119,6 @@ class User extends CI_Controller {
 		}
 		$ret = $this->check_name($arg['name']);
 		if($ret['status'] == 0){
-			$data['msg'] = $ret['msg'];
 			echo json_encode($data);
 			return;
 			
@@ -102,7 +127,6 @@ class User extends CI_Controller {
 
 		$ret = $this->check_pw($arg['pw']);
 		if($ret['status'] == 0){
-			$data['msg'] = $ret['msg'];
 			echo json_encode($data);
 			return;
 		}
@@ -129,6 +153,12 @@ class User extends CI_Controller {
 				echo json_encode($data);
 				return;			
 			}
+		}
+
+		$ret = $this->check_priv($user[0]['priv']);
+		if($ret['status'] == 0){
+			echo json_encode($data);
+			return;
 		}
 
 		$data['status'] = 1;
@@ -160,17 +190,26 @@ class User extends CI_Controller {
 		$user = NULL;
 		$data = NULL;
 
-		if($uid != FALSE){
-			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
-		}
-		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
-			return;
-		}
-		
-		
 		$data['status'] = 0;
 		$arg = $this->input->post(NULL,TRUE);
 
+		if(isset($arg['h']) && strlen($arg['h']) > 0){
+			$user = $this->user_model->get_user(array('tmp_pw'=>$arg['h']),NULL);
+			if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['unregistered']){
+				return;
+			}
+		}
+
+		if($uid != FALSE){
+			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+			if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
+				return;
+			}
+		}
+		if(!$user){
+			return;
+		}
+		
 		if(!isset($arg['name']) || !isset($arg['pw']) || !isset($arg['email'])){
 			$data['msg'] = 'Username, password and email are required.';
 			echo json_encode($data);
@@ -241,11 +280,11 @@ class User extends CI_Controller {
 			$arg['pages'] = $ret['val'];
 		}
 
-
-		if(isset($arg['priv']) && $arg['priv'] == 'admin' && $user[0]['uid'] < 1){
-			$arg['priv'] = $priv['admin'];
-		}else{
-			$arg['priv'] = 0;
+		if(isset($arg['priv'])){
+			$ret = $this->check_priv($arg['priv']);
+			if($ret['status'] == 0 || !$this->is_root_admin($user[0])){
+				$arg['priv'] = $priv['user'];
+			}
 		}
 
 		$this->user_model->add_user($arg);
@@ -352,7 +391,8 @@ class User extends CI_Controller {
 					return;
 				}
 				$arg['val'] = $ret['val'];
-				if($this->user_model->get_user(array('email' => $arg['val']), NULL)){
+				$same_mail_user = $this->user_model->get_user(array('email' => $arg['val']), NULL);
+				if($same_mail_user && $same_mail_user[0]['uid'] != $user[0]['uid']){
 					$data['msg'] = 'Email already exists.';
 					echo json_encode($data);
 					return;
@@ -417,7 +457,8 @@ class User extends CI_Controller {
 
 		echo json_encode($data);
 	}
-	public function forgot_pw(){
+	public function forgot_pw()
+	{
 		
 		$this->load->model('user_model');
 
@@ -433,7 +474,8 @@ class User extends CI_Controller {
 		$data['tab']['forgot_pw'] = 1;
 		$this->set_page('forgot_pw',$data);
 	}
-	public function forgot_pw_proc(){
+	public function forgot_pw_proc()
+	{
 	
 		$this->load->model('user_model');
 		$this->load->model('log_model');
@@ -484,12 +526,73 @@ class User extends CI_Controller {
 		$data['status'] = 1;
 		echo json_encode($data);
 	}
+	public function invite_user()
+	{
+		$this->load->model('user_model');
+		$this->load->model('log_model');
+
+		$priv = $this->config->item('privilege');
+		$exp = $this->config->item('expiration');
+		$uid = $this->session->userdata('uid');
+
+		$data['status'] = 0;
+
+		if($uid != FALSE){
+			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+		}
+		if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
+			echo json_encode($data);
+			return;
+		}
+
+		$arg = $this->input->post(NULL,TRUE);
+
+		if(!isset($arg['email'])){
+			$data['msg'] = 'Wrong email.';
+			echo json_encode($data);
+			return;
+		}
+
+		$ret = $this->check_email($arg['email']);
+		if($ret['status'] == 0){
+			$data['msg'] = 'Wrong email.';
+			echo json_encode($data);
+			return;
+		}
+
+		$hash = hash('sha256', $arg['email'] . random_string('unique'));
+		$link = site_url('user/registration/'.$hash);
+		$arg['name'] = substr($hash,0,16); 
+		// check unique name 
+		$arg['pw'] = $hash;
+		$arg['tmp_pw'] = $hash;
+		$arg['priv'] = $priv['unregistered']; 
+		$arg['pw_timestamp'] = (string)time();
+
+		//$this->user_model->add_user($arg);
+
+		exec('scripts/invitation.sh '.escapeshellarg($arg['email']).' '.escapeshellarg($link),$res);
+		$this->log_model->add_log(array('sname'=>$user[0]['name'],'act'=>'invite user','desc'=>'email: '.$arg['email']));
+
+		$data['status'] = 1;
+		echo json_encode($data);
+	} 
 /* private */
-	private function encode_strings($list = array()){
+	private function encode_strings($list = array())
+	{
 		foreach ($list as &$v){
 			$v = htmlentities($v,ENT_QUOTES);
 		}
 		return $list;
+	}
+	private function is_root_admin($u)
+	{
+		$priv = $this->config->item('privilege');
+		if(isset($u['priv']) && isset($u['uid']) && $u['priv'] == $priv['admin'] && $u['uid'] == 1){
+			
+			return true;
+		}
+		return false;
 	}
 	private function check_name($name = NULL)
 	{
@@ -573,6 +676,23 @@ class User extends CI_Controller {
 		if(strlen($pages) > 512){
 			$ret['val'] = substr($pages, 0, 512);
 		}
+		return $ret;
+	}
+	private function check_priv($priv = NULL)
+	{
+		$priv_set = $this->config->item('privilege');
+		$ret = array('status' => 0, 'val' => $priv_set['user']);
+
+		if($priv != $priv_set['unregistered']){
+			foreach($priv_set as $k=>$v){
+				if($priv == $v){
+					$ret['status'] = 1;
+					$ret['val'] = $priv;
+					return $ret;
+				}
+			}
+		}
+		
 		return $ret;
 	}
 	private function set_page($page,$data)

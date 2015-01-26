@@ -2,12 +2,11 @@
 
 Subject="重設密碼通知"
 Receiver=$2
-
-mail_content=$(mktemp)
-
 name=$1
 tmp_pw=$3
 date=$(date +"%F %T")
+
+mail_content=$(mktemp)
 
 echo "使用者 $1 您好：" 					>> $mail_content
 echo "" 							>> $mail_content

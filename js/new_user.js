@@ -1,4 +1,22 @@
 $(document).ready(function(){
+	$('#send-inv').click(function(){
+		var form = $('#invitation');
+		var email = form.find('[name=target]').val();
+		$.ajax({
+			type: 'POST',
+			url: '/index.php/user/invite_user',
+			data: {email:email},
+			dataType: 'json',
+		})
+		.done(function(j){
+			if(j.status){
+				alert('已送出註冊邀請');
+				location.reload();
+			}else{
+				$('#invitation-msg').html(j.msg);
+			}
+		});
+	});
 	$('#add-user-submit').click(function(){
 		var userdata = {};
 		var form = $('#add-user');
@@ -13,6 +31,8 @@ $(document).ready(function(){
 		userdata.phone = form.find('[name=phone]').val();
 		userdata.pages = form.find('[name=pages]').val();
 		userdata.priv = form.find('[name=priv]').val();
+		h = form.find('[name=h]').val();
+		if(h) userdata.h = h;
 
 		if(userdata.pw != confirm_pw){
 			$('#add-user-msg').html('Password and confirmation password do no match.');	
