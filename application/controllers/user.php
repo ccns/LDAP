@@ -79,25 +79,35 @@ class User extends CI_Controller {
 		$this->load->model('user_model');
 		$priv = $this->config->item('privilege');
 		$exp = $this->config->item('expiration');
+		$uid = $this->session->userdata('uid');
 
 		if(!isset($hash) || strlen($hash) == 0){
 			return;
 		}
+		
+		// if user has signed in with another account
+		if($uid != FALSE){
+			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
+			if($user){
+				$data['user'] = $user[0];
+			}
+		}
 
-		$user = $this->user_model->get_user(
+		$ur_user = $this->user_model->get_user(
 						array(
 							'tmp_pw'=>$hash
 						),
 						NULL
 						);
-		if($user == FALSE || !isset($user[0]['email']) || $user[0]['priv'] != $priv['unregistered']){
-			return;
-		}
-		if(isset($exp['registration']) && (time() - (int)$user[0]['pw_timestamp'] > $exp['registration'])){
+		if($ur_user == FALSE || !isset($ur_user[0]['email'])){
 			return;
 		}
 
-		$data['email'] = $user[0]['email'];
+		if( $ur_user[0]['priv'] != $priv['unregistered'] || ( isset($exp['registration']) && (time() - (int)$ur_user[0]['pw_timestamp'] > $exp['registration']))){
+			return;
+		}
+
+		$data['email'] = $ur_user[0]['email'];
 		$data['hash'] = $hash;
 		$data['invited'] = 1;
 		$data['allow_edit_user'] = 1;
@@ -188,6 +198,7 @@ class User extends CI_Controller {
 		$uid = $this->session->userdata('uid');
 
 		$user = NULL;
+		$ur_user = NULL;
 		$data = NULL;
 
 		$data['status'] = 0;
@@ -195,21 +206,28 @@ class User extends CI_Controller {
 
 		if(isset($arg['h']) && strlen($arg['h']) > 0){
 			$user = $this->user_model->get_user(array('tmp_pw'=>$arg['h']),NULL);
+			$ur_user = $user;
 			if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['unregistered']){
+				$data['msg'] = 'Account already exists.';
+				echo json_encode($data);
 				return;
 			}
 		}
 
-		if($uid != FALSE){
+		if(!$ur_user && $uid != FALSE){
 			$user = $this->user_model->get_user(array('uid'=>$uid),NULL);
 			if(!isset($user[0]['priv']) || $user[0]['priv'] != $priv['admin']){
+				$data['msg'] = 'Fail to add user.';
+				echo json_encode($data);
 				return;
 			}
 		}
 		if(!$user){
+			$data['msg'] = 'Fail to add user.';
+			echo json_encode($data);
 			return;
 		}
-		
+
 		if(!isset($arg['name']) || !isset($arg['pw']) || !isset($arg['email'])){
 			$data['msg'] = 'Username, password and email are required.';
 			echo json_encode($data);
@@ -237,17 +255,23 @@ class User extends CI_Controller {
 		}
 		$arg['pw'] = hash('sha256', $arg['pw']);
 				
-		$ret = $this->check_email($arg['email']);
-		if($ret['status'] == 0){
-			$data['msg'] = $ret['msg'];
-			echo json_encode($data);
-			return;
-		}
-		$arg['email'] = $ret['val'];
-		if($this->user_model->get_user(array('email' => $arg['email']), NULL)){
-			$data['msg'] = 'Email already exists.';
-			echo json_encode($data);
-			return;
+		if($user[0]['priv'] == $priv['unregistered']){
+			// user already has email
+			unset($arg['email']);
+		}else{
+			$ret = $this->check_email($arg['email']);
+			if($ret['status'] == 0){
+				$data['msg'] = $ret['msg'];
+				echo json_encode($data);
+				return;
+			}
+			$arg['email'] = $ret['val'];
+			$ur_user = $this->user_model->get_user(array('email' => $arg['email']), NULL);
+			if($ur_user && $ur_user[0]['priv'] != $priv['unregistered']){
+				$data['msg'] = 'Email already exists.';
+				echo json_encode($data);
+				return;
+			}
 		}
 
 		if(isset($arg['realname'])){
@@ -279,17 +303,25 @@ class User extends CI_Controller {
 			}
 			$arg['pages'] = $ret['val'];
 		}
-
-		if(isset($arg['priv'])){
-			$ret = $this->check_priv($arg['priv']);
-			if($ret['status'] == 0 || !$this->is_root_admin($user[0])){
-				$arg['priv'] = $priv['user'];
+		if(isset($ur_user[0]['priv']) && $ur_user[0]['priv'] == $priv['unregistered']){
+			$arg['priv'] = $priv['user'];
+			$arg['tmp_pw'] = '';
+			
+			$this->user_model->edit_user(array('uid' => $ur_user[0]['uid']), $arg);
+			$this->log_model->add_log(array('sname'=>$arg['name'],'act'=>'register'));
+			$data['redirect_index'] = 1;
+		}else{
+			if(isset($arg['priv'])){
+				$ret = $this->check_priv($arg['priv']);
+				if($ret['status'] == 0 || !$this->is_root_admin($user[0])){
+					$arg['priv'] = $priv['user'];
+				}
 			}
-		}
 
-		$this->user_model->add_user($arg);
+			$this->user_model->add_user($arg);
+			$this->log_model->add_log(array('sname'=>$user[0]['name'],'oname'=>$arg['name'],'act'=>'add user'));
+		}
 		$this->user_model->update_timestamp($arg['name']);
-		$this->log_model->add_log(array('sname'=>$user[0]['name'],'oname'=>$arg['name'],'act'=>'add user'));
 		
 		$data['status'] = 1;
 		echo json_encode($data);
@@ -545,7 +577,7 @@ class User extends CI_Controller {
 			return;
 		}
 
-		$arg = $this->input->post(NULL,TRUE);
+		$arg['email'] = $this->input->post('email',TRUE);
 
 		if(!isset($arg['email'])){
 			$data['msg'] = 'Wrong email.';
@@ -559,17 +591,29 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
+		$arg['email'] = $ret['val'];
+
+		$ur_user = $this->user_model->get_user(array('email' => $arg['email']), NULL);
+		if(isset($ur_user[0]['priv']) && $ur_user[0]['priv'] != $priv['unregistered']){
+			$data['msg'] = 'Email already exists.';
+			echo json_encode($data);
+			return;
+		}
 
 		$hash = hash('sha256', $arg['email'] . random_string('unique'));
 		$link = site_url('user/registration/'.$hash);
-		$arg['name'] = substr($hash,0,16); 
+		$arg['name'] = substr(random_string('unique'),0,16); 
 		// check unique name 
 		$arg['pw'] = $hash;
 		$arg['tmp_pw'] = $hash;
 		$arg['priv'] = $priv['unregistered']; 
 		$arg['pw_timestamp'] = (string)time();
-
-		//$this->user_model->add_user($arg);
+		
+		if(isset($ur_user[0]['uid'])){
+			$this->user_model->edit_user(array('uid'=>$ur_user[0]['uid']),$arg);
+		}else{
+			$this->user_model->add_user($arg);
+		}
 
 		exec('scripts/invitation.sh '.escapeshellarg($arg['email']).' '.escapeshellarg($link),$res);
 		$this->log_model->add_log(array('sname'=>$user[0]['name'],'act'=>'invite user','desc'=>'email: '.$arg['email']));

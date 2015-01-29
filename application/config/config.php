@@ -14,7 +14,7 @@
 | path to your installation.
 |
 */
-$config['base_url']	= 'http://hq.ccns.ncku.edu.tw';
+$config['base_url']	= 'https://hq1.ccns.ncku.edu.tw';
 
 /*
 |--------------------------------------------------------------------------

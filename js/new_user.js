@@ -48,7 +48,11 @@ $(document).ready(function(){
 		.done(function(j){
 			if(j.status){
 				alert('新增成功!');
-				location.reload();
+				if(j.redirect_index){
+					location.replace('/');
+				}else{
+					location.reload();
+				}
 			}else{
 				$('#add-user-msg').html(j.msg);
 			}

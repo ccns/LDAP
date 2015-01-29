@@ -18,7 +18,7 @@ class Member_directory extends CI_Controller {
 			if($data['user']['priv'] == $priv['admin']){
 				$data['allow_edit_user'] = 1;
 			}
-			$user = $this->user_model->get_user(array('uid >'=>'1'),NULL);
+			$user = $this->user_model->get_user(array('uid >'=>'1','priv >='=>$priv['user']),NULL);
 			foreach($user as &$v){
 				$v = $this->encode_strings($v);
 			}

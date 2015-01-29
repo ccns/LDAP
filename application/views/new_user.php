@@ -15,7 +15,11 @@
 		</article>
 		<?php endif; ?>
 		<article>
+		<?php if(isset($invited)): ?>
+			<h2>註冊</h2>
+		<?php else: ?>
 			<h2>新增使用者</h2>
+		<?php endif; ?>
 			<div class="article-info"></div>
 			<form action="#" id="add-user" method="POST">
 			<fieldset class="clear">
@@ -42,7 +46,11 @@
 				<?php endif; ?>
 				<li><span id="add-user-msg" class="warning"></span></li>
 				</ul>
+				<?php if(isset($invited)): ?>
+				<a id="add-user-submit" class="button" >Submit</a>
+				<?php else: ?>	
 				<a id="add-user-submit" class="button" >ADD</a>
+				<?php endif; ?>
 			</fieldset>
 			</form>
 		</article>
