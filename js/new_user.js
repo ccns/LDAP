@@ -9,6 +9,7 @@ $(document).ready(function(){
 			dataType: 'json',
 		})
 		.done(function(j){
+			$('#invitation .warning').html('');
 			if(j.status){
 				alert('已送出註冊邀請');
 				location.reload();
@@ -16,6 +17,7 @@ $(document).ready(function(){
 				$('#invitation-msg').html(j.msg);
 			}
 		});
+		$('#invitation .warning').html($('#loader').clone().removeClass('hide'));
 	});
 	$('#add-user-submit').click(function(){
 		var userdata = {};

@@ -8,7 +8,7 @@
 			<fieldset class="clear">
 				<ul class="list-in-form">	
 				<li><label class="label150" for="target">EMAIL</label><input type="text" class="add-text" name="target" maxlength="64" /><a href="javascript:void(0)" class="button" id="send-inv">Send</a></li>
-				<li><span id="invitation-msg" class="warning"></span></li>
+				<li><span class="span150">&nbsp</span><span id="invitation-msg" class="warning"></span></li>
 				</ul>
 			</fieldset>
 			</form>
