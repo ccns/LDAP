@@ -6,7 +6,6 @@ class User extends CI_Controller {
 	{
 		$this->page();
 	}
-
 	public function page($name = NULL)
 	{
 		$this->load->model('user_model');
@@ -321,7 +320,7 @@ class User extends CI_Controller {
 			$this->user_model->add_user($arg);
 			$this->log_model->add_log(array('sname'=>$user[0]['name'],'oname'=>$arg['name'],'act'=>'add user'));
 		}
-		$this->user_model->update_timestamp($arg['name']);
+		$this->user_model->update_timestamp(array('name' => $arg['name']));
 		
 		$data['status'] = 1;
 		echo json_encode($data);
@@ -457,7 +456,7 @@ class User extends CI_Controller {
 					return;
 				}
 				$arg['val'] = hash('sha256', $arg['val']);
-				$this->user_model->update_timestamp($name);
+				$this->user_model->update_timestamp(array('name' => $name));
 				break;
 			case 'priv':
 				$target = $this->user_model->get_user(array('name'=>$name),NULL);
@@ -607,13 +606,14 @@ class User extends CI_Controller {
 		$arg['pw'] = $hash;
 		$arg['tmp_pw'] = $hash;
 		$arg['priv'] = $priv['unregistered']; 
-		$arg['pw_timestamp'] = (string)time();
+		//$arg['pw_timestamp'] = (string)time();
 		
 		if(isset($ur_user[0]['uid'])){
 			$this->user_model->edit_user(array('uid'=>$ur_user[0]['uid']),$arg);
 		}else{
 			$this->user_model->add_user($arg);
 		}
+		$this->user_model->update_timestamp(array('name' => $arg['name']));
 
 		exec('scripts/invitation.sh '.escapeshellarg($arg['email']).' '.escapeshellarg($link),$res);
 		$this->log_model->add_log(array('sname'=>$user[0]['name'],'act'=>'invite user','desc'=>'email: '.$arg['email']));
