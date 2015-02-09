@@ -606,7 +606,6 @@ class User extends CI_Controller {
 		$arg['pw'] = $hash;
 		$arg['tmp_pw'] = $hash;
 		$arg['priv'] = $priv['unregistered']; 
-		//$arg['pw_timestamp'] = (string)time();
 		
 		if(isset($ur_user[0]['uid'])){
 			$this->user_model->edit_user(array('uid'=>$ur_user[0]['uid']),$arg);

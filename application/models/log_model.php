@@ -9,7 +9,8 @@ class Log_model extends CI_Model {
 	{
 		$this->load->helper('file');
 
-		$q['timestamp'] = (string)time();	
+		$dt = new DateTime('NOW');
+		$q['timestamp'] = (string)$dt->getTimestamp();	
 
 		$data = '';
 		foreach ($this->fields as $v){

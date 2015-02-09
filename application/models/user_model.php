@@ -2,9 +2,9 @@
 class User_model extends CI_Model {
 
 	var $table_name = "user";
-	var $exclude_fields = array('pw' => 1,'tmp_pw' => 1);
-	var $query_fields = array('uid' => 1, 'name' => 1, 'email' => 1);
-	var $uneditable_fields = array('uid' => 1);
+	var $veiled_fields = array('pw' => 1,'tmp_pw' => 1);
+	var $identifiable_fields = array('uid' => 1, 'name' => 1, 'email' => 1);
+	var $uneditable_fields = array('uid' => 1, 'pw_timastamp' => 1);
 
 	public function add_user($q)
 	{
@@ -38,7 +38,7 @@ class User_model extends CI_Model {
 		$f = $this->db->list_fields($this->table_name);
 		$valid = array();
 		foreach ($f as $n){
-			if(!isset($this->exclude_fields[$n])){
+			if(!isset($this->veiled_fields[$n])){
 				array_push($valid,$n);
 			}
 		}
@@ -82,8 +82,9 @@ class User_model extends CI_Model {
 	public function update_timestamp($q = array())
 	{
 		$this->load->database();
-		$data['pw_timestamp'] = (string)time();	
-		foreach ($this->query_fields as $k=>$v){
+		$dt = new DateTime('NOW');
+		$data['pw_timestamp'] = (string)$dt->getTimestamp();
+		foreach ($this->identifiable_fields as $k=>$v){
 			if(isset($q[$k])){
 				$this->db->where($k, $q[$k]);
 			}
