@@ -239,12 +239,12 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
+		$arg['name'] = $ret['val'];
 		if($this->user_model->get_user(array('name' => $ret['val']), NULL)){
 			$data['msg'] = 'Username already exists.';
 			echo json_encode($data);
 			return;
 		}
-		$arg['name'] = $ret['val'];
 		
 		$ret = $this->check_pw($arg['pw']);
 		if($ret['status'] == 0){
@@ -528,6 +528,7 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
+		$arg['name'] = $ret['val'];
 
 		$ret = $this->check_email($arg['email']);
 		if($ret['status'] == 0){
@@ -535,6 +536,7 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
+		$arg['email'] = $ret['val'];
 
 		$user = $this->user_model->get_user(array('name'=>$arg['name'],'email'=>$arg['email']),NULL);
 		if(!$user){
