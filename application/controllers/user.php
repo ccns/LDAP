@@ -132,7 +132,6 @@ class User extends CI_Controller {
 			return;
 			
 		}
-		$arg['name'] = $ret['val'];
 
 		$ret = $this->check_pw($arg['pw']);
 		if($ret['status'] == 0){
@@ -239,8 +238,7 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
-		$arg['name'] = $ret['val'];
-		if($this->user_model->get_user(array('name' => $ret['val']), NULL)){
+		if($this->user_model->get_user(array('name' => $arg['name']), NULL)){
 			$data['msg'] = 'Username already exists.';
 			echo json_encode($data);
 			return;
@@ -264,7 +262,6 @@ class User extends CI_Controller {
 				echo json_encode($data);
 				return;
 			}
-			$arg['email'] = $ret['val'];
 			$ur_user = $this->user_model->get_user(array('email' => $arg['email']), NULL);
 			if($ur_user && $ur_user[0]['priv'] != $priv['unregistered']){
 				$data['msg'] = 'Email already exists.';
@@ -280,7 +277,6 @@ class User extends CI_Controller {
 				echo json_encode($data);
 				return;
 			}
-			$arg['realname'] = $ret['val'];
 		}
 		
 		if(isset($arg['phone'])){
@@ -290,7 +286,6 @@ class User extends CI_Controller {
 				echo json_encode($data);
 				return;
 			}
-			$arg['phone'] = $ret['val'];
 		}
 
 		if(isset($arg['pages'])){
@@ -300,7 +295,6 @@ class User extends CI_Controller {
 				echo json_encode($data);
 				return;
 			}
-			$arg['pages'] = $ret['val'];
 		}
 		if(isset($ur_user[0]['priv']) && $ur_user[0]['priv'] == $priv['unregistered']){
 			$arg['priv'] = $priv['user'];
@@ -412,7 +406,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return;
 				}
-				$data['val'] = $arg['val'] = $ret['val'];
+				$data['val'] = $arg['val'];
 				break;
 			case 'email':
 				$ret = $this->check_email($arg['val']);
@@ -421,7 +415,6 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return;
 				}
-				$arg['val'] = $ret['val'];
 				$same_mail_user = $this->user_model->get_user(array('email' => $arg['val']), NULL);
 				if($same_mail_user && $same_mail_user[0]['uid'] != $user[0]['uid']){
 					$data['msg'] = 'Email already exists.';
@@ -437,7 +430,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return;
 				}
-				$data['val'] = $arg['val'] = $ret['val'];
+				$data['val'] = $arg['val'];
 				break;
 			case 'pages':
 				$ret = $this->check_pages($arg['val']);
@@ -446,7 +439,7 @@ class User extends CI_Controller {
 					echo json_encode($data);
 					return;
 				}
-				$data['val'] = $arg['val'] = $ret['val'];
+				$data['val'] = $arg['val'];
 				break;
 			case 'pw':
 				$ret = $this->check_pw($arg['val']);
@@ -528,7 +521,6 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
-		$arg['name'] = $ret['val'];
 
 		$ret = $this->check_email($arg['email']);
 		if($ret['status'] == 0){
@@ -536,7 +528,6 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
-		$arg['email'] = $ret['val'];
 
 		$user = $this->user_model->get_user(array('name'=>$arg['name'],'email'=>$arg['email']),NULL);
 		if(!$user){
@@ -592,7 +583,6 @@ class User extends CI_Controller {
 			echo json_encode($data);
 			return;
 		}
-		$arg['email'] = $ret['val'];
 
 		$ur_user = $this->user_model->get_user(array('email' => $arg['email']), NULL);
 		if(isset($ur_user[0]['priv']) && $ur_user[0]['priv'] != $priv['unregistered']){
@@ -639,7 +629,7 @@ class User extends CI_Controller {
 		}
 		return false;
 	}
-	private function check_name($name = NULL)
+	private function check_name(&$name = NULL)
 	{
 		$ret = array('status' => 1);
 		if(strlen($name) < 3 || strlen($name) > 16){
@@ -647,8 +637,8 @@ class User extends CI_Controller {
 			$ret['msg'] = 'Username must be at least 3 characterss and no longer than 16 characters.';
 			return $ret;
 		}
-		$ret['val'] = strtolower($name);
-		if(!preg_match("/^[a-z_][a-z0-9_-]*$/",$ret['val'])){
+		$name = strtolower($name);
+		if(!preg_match("/^[a-z_][a-z0-9_-]*$/",$name)){
 			$ret['status'] = 0;
 			$ret['msg'] = 'Username must match pattern /^[a-z_][a-z0-9_-]*$/.';
 			return $ret;
@@ -672,7 +662,7 @@ class User extends CI_Controller {
 		}
 		return $ret;
 	}
-	private function check_email($email = NULL)
+	private function check_email(&$email = NULL)
 	{
 		$ret = array('status' => 1);
 		if(strlen($email) < 5){
@@ -690,19 +680,19 @@ class User extends CI_Controller {
 			$ret['msg'] = 'Invalid email.';
 			return $ret;
 		}
-		$ret['val'] = $match[1] . (strtolower($match[2]));
+		$email = $match[1] . (strtolower($match[2]));
 		
 		return $ret;
 	}
-	private function check_realname($realname = NULL)
+	private function check_realname(&$realname = NULL)
 	{
 		$ret = array('status' => 1, 'val' => $realname);
 		if(strlen($realname) > 16){
-			$ret['val'] = substr($realname, 0, 16);
+			$realname = substr($realname, 0, 16);
 		}
 		return $ret;
 	}
-	private function check_phone($phone = NULL)
+	private function check_phone(&$phone = NULL)
 	{
 		$ret = array('status' => 1, 'val' => $phone);
 		if(!preg_match("/^[0-9+-]*$/",$phone)){
@@ -711,7 +701,7 @@ class User extends CI_Controller {
 			return $ret;
 		}
 		if(strlen($phone) > 20){
-			$ret['val'] = substr($phone, 0, 20);
+			$phone = substr($phone, 0, 20);
 		}
 		return $ret;
 	}
@@ -719,7 +709,7 @@ class User extends CI_Controller {
 	{
 		$ret = array('status' => 1, 'val' => $pages);
 		if(strlen($pages) > 512){
-			$ret['val'] = substr($pages, 0, 512);
+			$pages = substr($pages, 0, 512);
 		}
 		return $ret;
 	}
